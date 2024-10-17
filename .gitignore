@@ -130,3 +130,5 @@ dist
 .pnp.*
 
 /.idea
+
+__tests__/jest.config.js
