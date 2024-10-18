@@ -1,5 +1,4 @@
 import {Router} from "express";
-import {SETTINGS} from "../../settings";
 import {createBlogController} from "./createBlogController";
 import {getAllBlogsController} from "./getAllBlogsController";
 import {findBlogController} from "./findBlogController";
@@ -9,8 +8,8 @@ import {deleteBlogController} from "./deleteBlogController";
 
 export const blogRouter = Router();
 
-blogRouter.post(SETTINGS.PATH.BLOGS, createBlogController);
-blogRouter.get(SETTINGS.PATH.BLOGS, getAllBlogsController);
-blogRouter.get(SETTINGS.PATH.BLOGS, findBlogController);
-blogRouter.put(SETTINGS.PATH.BLOGS, updateBlogController);
-blogRouter.delete(SETTINGS.PATH.BLOGS, deleteBlogController);
+blogRouter.post("/", createBlogController);
+blogRouter.get("/", getAllBlogsController);
+blogRouter.get("/:id", findBlogController);
+blogRouter.put("/:id", updateBlogController);
+blogRouter.delete("/:id", deleteBlogController);

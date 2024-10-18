@@ -11,8 +11,10 @@ export const createBlogController = (req: Request<any, any, BlogInputModel>,
     //validation
 
     const newBlog: BlogDBType = blogRepository.createBlog(req.body);
+    console.log(newBlog)
+
     res
-        .sendStatus(201)
+        .status(201)
         .json(newBlog)
 
 }

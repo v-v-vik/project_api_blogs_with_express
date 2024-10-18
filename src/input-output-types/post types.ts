@@ -8,3 +8,10 @@ export type PostDBType = {
     blogId: string,
     blogName: string
 }
+
+export type PostInputModel = {
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string
+}

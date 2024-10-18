@@ -13,8 +13,8 @@ export const updateBlogController = (req: Request<ParamType, any, BlogInputModel
 
     const isUpdated: boolean = blogRepository.updateBlog(req.params.id, req.body);
     if (isUpdated) {
-        res.status(204)
+        res.sendStatus(204)
     } else {
-        res.status(404)
+        res.sendStatus(404)
     }
 }
