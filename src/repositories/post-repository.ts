@@ -60,6 +60,10 @@ export const postRepository = {
             }
         }
         return false;
+    },
+
+    find(id:string) {
+        return db.posts.find(p => p.id === id)
     }
 
 }

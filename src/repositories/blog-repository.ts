@@ -50,6 +50,10 @@ export const blogRepository = {
             }
         }
         return false;
+    },
+
+    find(id:string) {
+        return db.blogs.find(b=> b.id === id)
     }
 
 }
