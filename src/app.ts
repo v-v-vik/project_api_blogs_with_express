@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import {deleteAllDataController} from "./routers/deleteAllDataController";
 
 export const app = express();
 app.use(express.json());
@@ -11,3 +12,6 @@ app.get("/", (req, res) => {
         .status(200)
         .json({version: '1.0'})
 });
+
+
+app.delete("/testing/all-data", deleteAllDataController)
