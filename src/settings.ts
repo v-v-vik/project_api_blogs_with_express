@@ -6,5 +6,6 @@ export const SETTINGS = {
     PATH: {
         BLOGS: "/blogs",
         POSTS: "/posts"
-    }
+    },
+    ADMIN: process.env.ADMIN || 'admin:qwerty',
 }
