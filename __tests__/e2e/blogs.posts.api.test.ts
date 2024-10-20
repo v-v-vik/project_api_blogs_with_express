@@ -194,18 +194,44 @@ describe(SETTINGS.PATH.BLOGS, () => {
 
 describe(SETTINGS.PATH.POSTS, () => {
 
+    beforeAll(async () => {
+        await req.delete("/testing/all-data")
+    })
+
     it("should get empty array", async () => {
         await req.get(SETTINGS.PATH.POSTS)
             .expect(200, [])
     })
 
+    //create new post
+
+    let newBlog:any = null;
     let newPost: any = null;
     it("should create an element with correct input data", async () => {
+
+        // create blog
+
+        const BlogData = {
+            name: "Travel Blog",
+            description: "Blog about traveling",
+            websiteUrl: "https://www.travel-blog.com/"
+        }
+
+        const createRes = await req
+            .post(SETTINGS.PATH.BLOGS)
+            .set({'Authorization': 'Basic ' + encodeAuth()})
+            .send(BlogData)
+            .expect(201)
+
+
+        newBlog = createRes.body;
+
+
         const postData = {
             title: "New Post",
             shortDescription: "Some description",
             content: "Some content",
-            blogId: "2"
+            blogId: newBlog.id
         }
 
         const res = await req
@@ -221,11 +247,116 @@ describe(SETTINGS.PATH.POSTS, () => {
             shortDescription: postData.shortDescription,
             content: postData.content,
             blogId: postData.blogId,
-            blogName: "Photo Blog"
+            blogName: newBlog.name
 
         })
 
     })
+
+    it("should not create an element with incorrect input data", async () => {
+
+        const postData = {
+            title: "New Post",
+            shortDescription: "Some description",
+            content: "Some content",
+            blogId: "-1"
+        }
+
+        await req
+            .post(SETTINGS.PATH.POSTS)
+            .set({'Authorization': 'Basic ' + encodeAuth()})
+            .send(postData)
+            .expect(400)
+
+
+    })
+
+    // get by id request
+
+    it("should get an existing element via id parameter", async () => {
+
+        await req
+            .get(`${SETTINGS.PATH.POSTS}/${newPost.id}`)
+            .expect(200)
+
+    })
+
+    it("should not get an element of array with wrong id parameter", async () => {
+
+        await req
+            .get(SETTINGS.PATH.POSTS + "/-1")
+            .expect(404)
+
+    })
+
+    // update
+
+
+    it("should update existing element in the array", async () => {
+
+        const UpdateData = {
+            title: "Updated Post",
+            shortDescription: "Updated description",
+            content: "Some content",
+            blogId: newBlog.id
+        }
+
+        await req
+            .put(`${SETTINGS.PATH.POSTS}/${newPost.id}`)
+            .set({'Authorization': 'Basic ' + encodeAuth()})
+            .send(UpdateData)
+            .expect(204)
+
+        console.log(newPost)
+
+
+        await req
+            .get(`${SETTINGS.PATH.POSTS}/${newPost.id}`)
+            .expect(200, {
+                ...newPost,
+                title: UpdateData.title,
+                shortDescription: UpdateData.shortDescription,
+                content: UpdateData.content,
+                blogId: UpdateData.blogId,
+                blogName: newBlog.name
+            })
+
+
+    })
+
+    it("should not update existing element in the array with incorrect input data", async () => {
+
+        const UpdateData = {
+            title: "Updated Post",
+            shortDescription: "  ",
+            content: "Some content",
+            blogId: newBlog.id
+        }
+
+        await req
+            .put(`${SETTINGS.PATH.POSTS}/${newPost.id}`)
+            .set({'Authorization': 'Basic ' + encodeAuth()})
+            .send(UpdateData)
+            .expect(400)
+
+    })
+
+    //delete
+
+    it("should delete element with given id", async () => {
+
+        await req
+            .delete(`${SETTINGS.PATH.POSTS}/${newPost.id}`)
+            .set({'Authorization': 'Basic ' + encodeAuth()})
+            .expect(204)
+
+        console.log(db.posts)
+
+        await req
+            .get(SETTINGS.PATH.POSTS)
+            .expect(200, [])
+    })
+
 
 
 })

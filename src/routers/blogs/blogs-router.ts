@@ -10,8 +10,8 @@ import {blogValidators, findBlogValidator} from "../../middlewares/blogValidator
 
 export const blogRouter = Router();
 
-blogRouter.post("/", authMiddleware, ...blogValidators, createBlogController);
+blogRouter.post("/", authMiddleware, blogValidators, createBlogController);
 blogRouter.get("/", getAllBlogsController);
 blogRouter.get("/:id", findBlogValidator, findBlogController);
-blogRouter.put("/:id", authMiddleware, findBlogValidator, ...blogValidators, updateBlogController);
+blogRouter.put("/:id", authMiddleware, findBlogValidator, blogValidators, updateBlogController);
 blogRouter.delete("/:id", authMiddleware, findBlogValidator, deleteBlogController);
