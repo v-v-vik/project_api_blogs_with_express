@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
-import {postRepository} from "../../repositories/post-repository";
+import {postRepository} from "../../repositories/post-in-memory-repository";
 
 export const deletePostController = (req: Request<ParamType>,
                                      res: Response)=> {

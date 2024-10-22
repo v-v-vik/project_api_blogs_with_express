@@ -1,17 +1,20 @@
 import {BlogDBType, BlogInputModel} from "../input-output-types/blog types";
-import {db} from "./db";
+import {db_mockup} from "./db";
 
 
 export const blogRepository = {
-    createBlog(blog:BlogInputModel) {
+    async createBlog(blog:BlogDBType) : Promise<BlogDBType> {
         const newBlog: BlogDBType = {
-            id: (db.blogs.length + 1).toString(),
+            _id:blog._id,
+            id: (db_mockup.blogs.length + 1).toString(),
             name: blog.name,
             description: blog.description,
-            websiteUrl: blog.websiteUrl
+            websiteUrl: blog.websiteUrl,
+            createdAt: new Date().toISOString(),
+            isMembership: false
         }
 
-        db.blogs.push(newBlog);
+        db_mockup.blogs.push(newBlog);
 
 
 
@@ -19,23 +22,23 @@ export const blogRepository = {
     },
 
     getAllBlogs() {
-        return db.blogs;
+        return db_mockup.blogs;
     },
 
     findBlog(id:string) {
-        return  db.blogs.find(b=>b.id === id);
+        return  db_mockup.blogs.find(b=>b.id === id);
 
     },
 
     updateBlog(id: string, blog: BlogInputModel) {
-        let searchBlog = db.blogs.find(b=>b.id === id);
+        let searchBlog = db_mockup.blogs.find(b=>b.id === id);
         if (searchBlog) {
             const newData = {
                 name: blog.name,
                 description: blog.description,
                 websiteUrl: blog.websiteUrl
             }
-            db.blogs = db.blogs.map(b=>b.id === id ? {...b, ...newData} : b);
+            db_mockup.blogs = db_mockup.blogs.map(b=>b.id === id ? {...b, ...newData} : b);
             return true;
         } else {
             return false;
@@ -43,9 +46,9 @@ export const blogRepository = {
     },
 
     deleteBlog(id:string) {
-        for (let i=0; i<db.blogs.length; i++) {
-            if (db.blogs[i].id === id) {
-                db.blogs.splice(i, 1)
+        for (let i=0; i<db_mockup.blogs.length; i++) {
+            if (db_mockup.blogs[i].id === id) {
+                db_mockup.blogs.splice(i, 1)
                 return true;
             }
         }
@@ -53,7 +56,7 @@ export const blogRepository = {
     },
 
     find(id:string) {
-        return db.blogs.find(b=> b.id === id)
+        return db_mockup.blogs.find(b=> b.id === id)
     }
 
 }

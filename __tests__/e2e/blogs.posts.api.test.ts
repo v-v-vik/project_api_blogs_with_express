@@ -1,7 +1,7 @@
 import {SETTINGS} from "../../src/settings";
 import {app} from "../../src/app";
 import {agent} from "supertest";
-import {db} from "../../src/repositories/db";
+import {db_mockup} from "../../src/repositories/db";
 
 const req = agent(app);
 
@@ -181,7 +181,7 @@ describe(SETTINGS.PATH.BLOGS, () => {
             .set({'Authorization': 'Basic ' + encodeAuth()})
             .expect(204)
 
-        console.log(db.blogs)
+        console.log(db_mockup.blogs)
 
         await req
             .get(SETTINGS.PATH.BLOGS)
@@ -350,7 +350,7 @@ describe(SETTINGS.PATH.POSTS, () => {
             .set({'Authorization': 'Basic ' + encodeAuth()})
             .expect(204)
 
-        console.log(db.posts)
+        console.log(db_mockup.posts)
 
         await req
             .get(SETTINGS.PATH.POSTS)

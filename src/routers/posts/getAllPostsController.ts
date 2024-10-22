@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {BlogDBType} from "../../input-output-types/blog types";
 import {DBType} from "../../repositories/db";
 import {PostDBType} from "../../input-output-types/post types";
-import {postRepository} from "../../repositories/post-repository";
+import {postRepository} from "../../repositories/post-in-memory-repository";
 
 export const getAllPostsController = (req: Request<any>,
                                       res: Response <BlogDBType | DBType | any>)=> {

@@ -1,7 +1,5 @@
-import {NextFunction, Request, Response} from "express";
 import {body} from 'express-validator';
 import {checkInputErrorsMiddleware} from "./checkInputErrorsMiddleware";
-import {blogRepository} from "../repositories/blog-repository";
 
 export const nameValidator = body('name')
     .isString().withMessage('not string')
@@ -17,16 +15,17 @@ export const websiteUrlValidator = body('websiteUrl')
     .trim().isURL().withMessage('not url')
     .isLength({min: 1, max: 100}).withMessage('from 1 to 100 characters')
 
-export const findBlogValidator = (req: Request<{id: string}>,
-                                  res: Response, next: NextFunction) => {
-    const blog = blogRepository.find(req.params.id);
-    if (!blog) {
-        res.sendStatus(404)
-        return
-    }
-    next()
-
-}
+// export const findBlogValidator = async (req: Request<{ id: string }>,
+//                                         res: Response, next: NextFunction) => {
+//     const blog = blogRepository.find(req.params.id);
+//     if (!blog) {
+//         console.log("Validator found no ID")
+//         res.sendStatus(404)
+//         return
+//     }
+//     next()
+//
+// }
 
 export const blogValidators = [
     nameValidator,

@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
-import {postRepository} from "../../repositories/post-repository";
+import {postRepository} from "../../repositories/post-in-memory-repository";
 import {PostDBType} from "../../input-output-types/post types";
 
 export const findPostController = (req: Request<ParamType>,

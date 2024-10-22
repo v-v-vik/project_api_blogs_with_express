@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
 import {PostInputModel} from "../../input-output-types/post types";
-import {postRepository} from "../../repositories/post-repository";
+import {postRepository} from "../../repositories/post-in-memory-repository";
 
 
 export const updatePostController = (req: Request<ParamType, any, PostInputModel>,
