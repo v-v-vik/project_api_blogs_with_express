@@ -15,17 +15,18 @@ export const db_mockup: DBType = {
     posts: []
 }
 
+
 export const client = new MongoClient(SETTINGS.MONGO_URI);
 
 export const db = client.db(SETTINGS.DB_NAME);
-export const blogCollection = db.collection<BlogDBType>(SETTINGS.PATH.BLOGS)
-export const postCollection = db.collection<PostDBType>(SETTINGS.PATH.POSTS)
-
+export const blogCollection = db.collection<BlogDBType>(SETTINGS.PATH.BLOGS);
+export const postCollection = db.collection<PostDBType>(SETTINGS.PATH.POSTS);
 
 export async function runDB() {
     try {
         await client.connect();
         await db.command({ ping:1 });
+        console.log('DB_NAME', SETTINGS.DB_NAME)
         console.log("Connected successfully to mongo server.");
     } catch {
         console.log("Failed to connect to database.")

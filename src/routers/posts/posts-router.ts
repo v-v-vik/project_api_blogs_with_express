@@ -5,7 +5,7 @@ import {findPostController} from "./findPostController";
 import {updatePostController} from "./updatePostController";
 import {deletePostController} from "./deletePostController";
 import {authMiddleware} from "../../middlewares/authMiddleware";
-import {findPostValidator, postValidators} from "../../middlewares/postValidators";
+import {postValidators} from "../../middlewares/postValidators";
 
 
 
@@ -13,6 +13,6 @@ export const postRouter = Router();
 
 postRouter.post("/", authMiddleware, ...postValidators, createPostController);
 postRouter.get("/", getAllPostsController);
-postRouter.get("/:id", findPostValidator, findPostController);
-postRouter.put("/:id", authMiddleware, findPostValidator, ...postValidators, updatePostController);
-postRouter.delete("/:id", authMiddleware, findPostValidator, deletePostController);
+postRouter.get("/:id", findPostController); //findPostValidator
+postRouter.put("/:id", authMiddleware, ...postValidators, updatePostController); //findPostValidator
+postRouter.delete("/:id", authMiddleware, deletePostController); //findPostValidator

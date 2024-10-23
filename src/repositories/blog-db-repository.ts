@@ -1,5 +1,5 @@
 import {BlogDBType, BlogInputModel} from "../input-output-types/blog types";
-import {blogCollection, db_mockup} from "./db";
+import {blogCollection} from "./db";
 import {ObjectId, WithId} from "mongodb";
 
 
@@ -37,28 +37,28 @@ export const blogRepository = {
     },
 
     async updateBlog(id: string, blog: BlogInputModel): Promise<boolean> {
-        let searchBlog: BlogDBType | undefined = db_mockup.blogs.find(b=>b.id === id);
-        if (searchBlog) {
-            const newData = {
-                name: blog.name,
-                description: blog.description,
-                websiteUrl: blog.websiteUrl
-            }
-            db_mockup.blogs = db_mockup.blogs.map(b=>b.id === id ? {...b, ...newData} : b);
-            return true;
+        const foundBlog = await blogCollection.findOne({id: id});
+        if (foundBlog) {
+           const res = await blogCollection.updateOne(
+               {id:id},
+               {
+                   $set: {...blog}
+               }
+           )
+            return res.matchedCount === 1;
         } else {
             return false;
         }
     },
 
     async deleteBlog(id:string): Promise<boolean> {
-        for (let i=0; i<db_mockup.blogs.length; i++) {
-            if (db_mockup.blogs[i].id === id) {
-                db_mockup.blogs.splice(i, 1)
-                return true;
-            }
+        const foundBlog = await blogCollection.findOne({id: id});
+        if (foundBlog) {
+            await blogCollection.deleteOne({id: id});
+            return true;
+        } else {
+            return false;
         }
-        return false;
     },
 
     async find(id:string): Promise<WithId<BlogDBType> | null> {

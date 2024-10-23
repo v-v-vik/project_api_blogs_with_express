@@ -2,8 +2,6 @@ import {body} from "express-validator";
 import {blogRepository} from "../repositories/blog-in-memory-repository";
 import {BlogDBType} from "../input-output-types/blog types";
 import {checkInputErrorsMiddleware} from "./checkInputErrorsMiddleware";
-import {NextFunction, Request, Response} from "express";
-import {postRepository} from "../repositories/post-in-memory-repository";
 
 
 export const titleValidator = body('title')
@@ -21,22 +19,22 @@ export const contentValidator = body('content')
 export const blogIdValidator = body('blogId')
     .isString().withMessage('not string')
     .trim()
-    .custom(blogId => {
-        const blog:BlogDBType | undefined = blogRepository.find(blogId);
+    .custom(async blogId => {
+        const blog: BlogDBType | undefined = await blogRepository.find(blogId);
         return !!blog
     })
     .withMessage("this blogId does not exist")
 
-export const findPostValidator = (req: Request<{id: string}>,
-                                  res: Response, next: NextFunction) => {
-    const post = postRepository.find(req.params.id);
-    if (!post) {
-        res.sendStatus(404)
-        return
-    }
-    next()
-
-}
+// export const findPostValidator = (req: Request<{id: string}>,
+//                                   res: Response, next: NextFunction) => {
+//     const post = postRepository.find(req.params.id);
+//     if (!post) {
+//         res.sendStatus(404)
+//         return
+//     }
+//     next()
+//
+// }
 
 export const postValidators = [
     titleValidator,

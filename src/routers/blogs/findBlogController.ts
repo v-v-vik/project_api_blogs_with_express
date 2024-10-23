@@ -10,7 +10,6 @@ export const findBlogController = async (req: Request<ParamType>,
     if (searchBlog) {
         res.json(searchBlog)
     } else {
-        console.log("findBlogController failed to find the requested blog.")
         res.sendStatus(404)
     }
 

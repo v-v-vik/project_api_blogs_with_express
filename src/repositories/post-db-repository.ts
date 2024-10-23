@@ -1,69 +1,71 @@
-import {db_mockup} from "./db";
+import {blogCollection, postCollection} from "./db";
 import {PostDBType, PostInputModel} from "../input-output-types/post types";
-import {BlogDBType} from "../input-output-types/blog types";
+import {ObjectId} from "mongodb";
 
 
 export const postRepository = {
-    createPost(post:PostInputModel) {
-        let newPost:any;
-        const blog:BlogDBType | undefined = db_mockup.blogs.find(b=>b.id === post.blogId);
+    async createPost(post:PostInputModel):Promise<ObjectId> {
+        const newId = new ObjectId();
+        console.log(newId)
+        const itemsCount = await postCollection.countDocuments();
+        const blog = await blogCollection.findOne({id: post.blogId});
         if (blog) {
-            newPost = {
-                id: (db_mockup.posts.length + 1).toString(),
+            const newPost = {
+                _id: newId,
+                id: (itemsCount + 1).toString(),
                 title: post.title,
                 shortDescription: post.shortDescription,
                 content: post.content,
                 blogId: post.blogId,
-                blogName: blog.name
+                blogName: blog.name,
+                createdAt: new Date().toString()
             }
-
-            db_mockup.posts.push(newPost);
-
+            const res = await postCollection.insertOne(newPost);
+            console.log("NewPost was added:", res, "newId:", res.insertedId)
         }
-        return newPost;
+        return newId;
     },
 
-    getAllPosts(): PostDBType[] {
-        return db_mockup.posts;
+    async getPostByUUID(_id: ObjectId) {
+        return postCollection.findOne({_id: _id}, {projection:{_id:0}});
     },
 
-    findPost(id:string) {
-        return  db_mockup.posts.find(p=>p.id === id);
+    async getAllPosts(): Promise<PostDBType[]> {
+        return postCollection.find({}, {projection:{_id:0}}).toArray();
+    },
+
+    async findPost(id:string): Promise<PostDBType | null> {
+        return postCollection.findOne({id:id}, {projection:{_id:0}});
 
     },
 
-    updatePost(id: string, post: PostInputModel) {
-        let searchPost = db_mockup.posts.find(p=>p.id === id);
-        const blog:BlogDBType | undefined = db_mockup.blogs.find(b=>b.id === post.blogId);
-        if (searchPost) {
-            if (blog) {
-                const newData = {
-                    title: post.title,
-                    shortDescription: post.shortDescription,
-                    content: post.content,
-                    blogId: post.blogId,
-                    blogName: blog.name
+    async updatePost(id: string, post: PostInputModel) {
+        const foundPost = await postCollection.findOne({id:id});
+        if (foundPost) {
+             await postCollection.updateOne(
+                {id:id},
+                {
+                    $set: {...post}
                 }
-                db_mockup.posts = db_mockup.posts.map(p=>p.id === id ? {...p, ...newData} : p);
-            }
+            )
             return true;
         } else {
             return false;
         }
     },
 
-    deletePost(id:string) {
-        for (let i=0; i<db_mockup.blogs.length; i++) {
-            if (db_mockup.posts[i].id === id) {
-                db_mockup.posts.splice(i, 1)
-                return true;
-            }
+    async deletePost(id:string) {
+        const foundPost = await postCollection.findOne({id: id});
+        if (foundPost) {
+            await postCollection.deleteOne({id: id});
+            return true;
+        } else {
+            return false;
         }
-        return false;
     },
 
-    find(id:string) {
-        return db_mockup.posts.find(p => p.id === id)
+    async find(id:string) {
+        return postCollection.findOne({id:id}, {projection:{_id:0}});
     }
 
 }

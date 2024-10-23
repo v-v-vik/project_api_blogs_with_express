@@ -1,13 +1,13 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
-import {postRepository} from "../../repositories/post-in-memory-repository";
+import {postRepository} from "../../repositories/post-db-repository";
 
-export const deletePostController = (req: Request<ParamType>,
+export const deletePostController = async (req: Request<ParamType>,
                                      res: Response)=> {
 
     //authorisation
 
-    const isDeleted: boolean = postRepository.deletePost(req.params.id);
+    const isDeleted: boolean = await postRepository.deletePost(req.params.id);
     if (isDeleted) {
         res.sendStatus(204)
     } else {

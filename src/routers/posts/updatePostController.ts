@@ -1,17 +1,17 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
 import {PostInputModel} from "../../input-output-types/post types";
-import {postRepository} from "../../repositories/post-in-memory-repository";
+import {postRepository} from "../../repositories/post-db-repository";
 
 
-export const updatePostController = (req: Request<ParamType, any, PostInputModel>,
-                                     res: Response) => {
+export const updatePostController = async (req: Request<ParamType, any, PostInputModel>,
+                                           res: Response) => {
     //authorization
 
     //validation
 
 
-    const isUpdated: boolean = postRepository.updatePost(req.params.id, req.body);
+    const isUpdated: boolean = await postRepository.updatePost(req.params.id, req.body);
     if (isUpdated) {
         res.sendStatus(204)
     } else {
