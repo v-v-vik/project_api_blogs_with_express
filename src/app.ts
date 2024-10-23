@@ -19,3 +19,5 @@ app.use(SETTINGS.PATH.BLOGS, blogRouter);
 app.use(SETTINGS.PATH.POSTS, postRouter)
 
 app.delete("/testing/all-data", deleteAllDataController)
+
+export default app;
