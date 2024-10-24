@@ -1,6 +1,5 @@
 import {body} from "express-validator";
-import {blogRepository} from "../repositories/blog-in-memory-repository";
-import {BlogDBType} from "../input-output-types/blog types";
+import {blogRepository} from "../repositories/blog-db-repository";
 import {checkInputErrorsMiddleware} from "./checkInputErrorsMiddleware";
 
 
@@ -20,10 +19,12 @@ export const blogIdValidator = body('blogId')
     .isString().withMessage('not string')
     .trim()
     .custom(async blogId => {
-        const blog: BlogDBType | undefined = await blogRepository.find(blogId);
-        return !!blog
+        const blog = await blogRepository.findBlog(blogId);
+        if (!blog) {
+            throw new Error("invalid blogId field");
+        }
     })
-    .withMessage("this blogId does not exist")
+
 
 // export const findPostValidator = (req: Request<{id: string}>,
 //                                   res: Response, next: NextFunction) => {

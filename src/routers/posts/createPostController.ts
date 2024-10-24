@@ -11,8 +11,9 @@ export const createPostController = async (req: Request<any, any, PostInputModel
     //validation
 
     const newPostId = await postRepository.createPost(req.body);
+    console.log("this is new postId:", newPostId)
     const newPost = await postRepository.getPostByUUID(newPostId);
-    console.log(newPost)
+    console.log("this is new Post:", newPost)
     res
         .status(201)
         .json(newPost)

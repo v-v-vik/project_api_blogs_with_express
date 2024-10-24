@@ -9,6 +9,7 @@ export const postRepository = {
         console.log(newId)
         const itemsCount = await postCollection.countDocuments();
         const blog = await blogCollection.findOne({id: post.blogId});
+        console.log("finding blog in create-rep:", blog)
         if (blog) {
             const newPost = {
                 _id: newId,
@@ -18,29 +19,29 @@ export const postRepository = {
                 content: post.content,
                 blogId: post.blogId,
                 blogName: blog.name,
-                createdAt: new Date().toString()
+                createdAt: new Date().toISOString()
             }
-            const res = await postCollection.insertOne(newPost);
-            console.log("NewPost was added:", res, "newId:", res.insertedId)
+            await postCollection.insertOne(newPost);
+
         }
         return newId;
     },
 
     async getPostByUUID(_id: ObjectId) {
-        return postCollection.findOne({_id: _id}, {projection:{_id:0}});
+        return await postCollection.findOne({_id: _id}, {projection:{_id:0}});
     },
 
     async getAllPosts(): Promise<PostDBType[]> {
-        return postCollection.find({}, {projection:{_id:0}}).toArray();
+        return await postCollection.find({}, {projection:{_id:0}}).toArray();
     },
 
     async findPost(id:string): Promise<PostDBType | null> {
-        return postCollection.findOne({id:id}, {projection:{_id:0}});
+        return await postCollection.findOne({id}, {projection:{_id:0}});
 
     },
 
     async updatePost(id: string, post: PostInputModel) {
-        const foundPost = await postCollection.findOne({id:id});
+        const foundPost = await postCollection.findOne({id});
         if (foundPost) {
              await postCollection.updateOne(
                 {id:id},
@@ -55,9 +56,9 @@ export const postRepository = {
     },
 
     async deletePost(id:string) {
-        const foundPost = await postCollection.findOne({id: id});
+        const foundPost = await postCollection.findOne({id});
         if (foundPost) {
-            await postCollection.deleteOne({id: id});
+            await postCollection.deleteOne({id});
             return true;
         } else {
             return false;
@@ -65,7 +66,7 @@ export const postRepository = {
     },
 
     async find(id:string) {
-        return postCollection.findOne({id:id}, {projection:{_id:0}});
+        return postCollection.findOne({id}, {projection:{_id:0}});
     }
 
 }

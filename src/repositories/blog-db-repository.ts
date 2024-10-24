@@ -1,6 +1,6 @@
 import {BlogDBType, BlogInputModel} from "../input-output-types/blog types";
 import {blogCollection} from "./db";
-import {ObjectId, WithId} from "mongodb";
+import {ObjectId} from "mongodb";
 
 
 export const blogRepository = {
@@ -24,16 +24,18 @@ export const blogRepository = {
     },
 
     async getAllBlogs(): Promise<BlogDBType[]> {
-         return blogCollection.find({}, {projection:{_id:0}}).toArray()
+         return await blogCollection.find({}, {projection:{_id:0}}).toArray()
     },
 
     async findBlog(id:string) {
-        return blogCollection.findOne({id:id}, {projection:{_id:0}});
+        const foundBlog = await blogCollection.findOne({id:id}, {projection:{_id:0}});
+        console.log("FoundBlog:", foundBlog, id);
+        return foundBlog;
 
     },
 
     async findBlogByUUID(_id: ObjectId) {
-        return blogCollection.findOne({_id:_id}, {projection:{_id:0}});
+        return await blogCollection.findOne({_id:_id}, {projection:{_id:0}});
     },
 
     async updateBlog(id: string, blog: BlogInputModel): Promise<boolean> {
@@ -61,8 +63,10 @@ export const blogRepository = {
         }
     },
 
-    async find(id:string): Promise<WithId<BlogDBType> | null> {
-        return blogCollection.findOne({id:id}, {projection:{_id:0}});
-    }
+    // async find(id:string): Promise<WithId<BlogDBType> | null> {
+    //     const searchBlog = await blogCollection.findOne({id:id}, {projection:{_id:0}});
+    //     console.log("blog:", searchBlog);
+    //     return searchBlog
+    // }
 
 }
