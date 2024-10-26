@@ -3,6 +3,7 @@ import {BlogDBType, BlogInputModel} from "../../input-output-types/blog types";
 import {blogRepository} from "../../repositories/blog-db-repository";
 import {OutputErrorsType} from "../../input-output-types/error output types";
 import {ObjectId} from "mongodb";
+import {blogService} from "../../domain/blogService";
 
 
 export const createBlogController = async (req: Request<any, any, BlogInputModel>,
@@ -11,8 +12,8 @@ export const createBlogController = async (req: Request<any, any, BlogInputModel
 
     //validation
 
-    const newBlogID: ObjectId = await blogRepository.createBlog(req.body);
-    const newBlog = await blogRepository.findBlogByUUID(newBlogID)
+    const newBlog= await blogService.createBlog(req.body);
+
 
     res
         .status(201)

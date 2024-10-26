@@ -27,7 +27,7 @@ export const postRepository = {
         return newId;
     },
 
-    async getPostByUUID(_id: ObjectId) {
+    async getPostByObjectId(_id: ObjectId) {
         return await postCollection.findOne({_id: _id}, {projection:{_id:0}});
     },
 

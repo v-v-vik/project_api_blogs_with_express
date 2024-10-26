@@ -12,7 +12,7 @@ export const createPostController = async (req: Request<any, any, PostInputModel
 
     const newPostId = await postRepository.createPost(req.body);
     console.log("this is new postId:", newPostId)
-    const newPost = await postRepository.getPostByUUID(newPostId);
+    const newPost = await postRepository.getPostByObjectId(newPostId);
     console.log("this is new Post:", newPost)
     res
         .status(201)
