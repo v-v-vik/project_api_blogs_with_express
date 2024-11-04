@@ -8,11 +8,14 @@ export const deleteBlogController = async (req: Request<ParamType>,
 
     //authorisation
 
+
+
     const isDeleted: boolean = await blogService.deleteBlog(req.params.id);
+
     if (isDeleted) {
         res.sendStatus(204)
     } else {
-        res.sendStatus(404)
+       res.sendStatus(404)
     }
 
 }

@@ -1,5 +1,6 @@
-import {body} from 'express-validator';
+import {body, query} from 'express-validator';
 import {checkInputErrorsMiddleware} from "./checkInputErrorsMiddleware";
+
 
 export const nameValidator = body('name')
     .isString().withMessage('not string')
@@ -14,6 +15,16 @@ export const websiteUrlValidator = body('websiteUrl')
     .isString().withMessage('not string')
     .trim().isURL().withMessage('not url')
     .isLength({min: 1, max: 100}).withMessage('from 1 to 100 characters')
+
+export const searchNameValidator = query('searchNameTerm')
+    .isString().withMessage('not string')
+    .trim()
+
+export const pageNumberValidator = query('pageNumber')
+    .isNumeric().withMessage('not number')
+    .trim()
+
+
 
 // export const findBlogValidator = async (req: Request<{ id: string }>,
 //                                         res: Response, next: NextFunction) => {

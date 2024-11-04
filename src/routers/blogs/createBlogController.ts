@@ -1,9 +1,9 @@
 import {Request, Response} from 'express';
 import {BlogDBType, BlogInputModel} from "../../input-output-types/blog types";
-import {blogRepository} from "../../repositories/blog-db-repository";
 import {OutputErrorsType} from "../../input-output-types/error output types";
-import {ObjectId} from "mongodb";
 import {blogService} from "../../domain/blogService";
+import {matchedData} from "express-validator";
+import {blogQueryRepository} from "../../repositories/blogQueryRepository";
 
 
 export const createBlogController = async (req: Request<any, any, BlogInputModel>,
@@ -11,9 +11,10 @@ export const createBlogController = async (req: Request<any, any, BlogInputModel
     //authorization
 
     //validation
+    const data:BlogInputModel = matchedData(req);
+    const newBlogId= await blogService.createBlog(data);
 
-    const newBlog= await blogService.createBlog(req.body);
-
+    const newBlog = await blogQueryRepository.getBlogById(newBlogId);
 
     res
         .status(201)

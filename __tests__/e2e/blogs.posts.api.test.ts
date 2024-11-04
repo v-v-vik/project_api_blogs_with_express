@@ -44,7 +44,6 @@ describe(SETTINGS.PATH.BLOGS, () => {
         const newId2 = new ObjectId();
         newBlog2 = {
             _id: newId,
-            id: "1",
             name: "Travel Blog",
             description: "Blog about traveling",
             websiteUrl: "https://www.travel-blog.com/",
@@ -53,7 +52,6 @@ describe(SETTINGS.PATH.BLOGS, () => {
         }
         newBlog3 = {
             _id: newId2,
-            id: "2",
             name: "Cooking Blog",
             description: "Blog about food",
             websiteUrl: "https://www.cook-blog.com/",
