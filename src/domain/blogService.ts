@@ -1,9 +1,6 @@
 import {BlogDBType, BlogInputModel} from "../input-output-types/blog types";
 import {blogRepository} from "../repositories/blogDbRepository";
 import {ObjectId} from "mongodb";
-import {blogQueryRepository} from "../repositories/blogQueryRepository";
-
-
 
 
 export const blogService: any = {
@@ -22,7 +19,7 @@ export const blogService: any = {
     },
 
     async updateBlog(id: string, blog: BlogInputModel): Promise<boolean> {
-        const foundBlog = await blogQueryRepository.getBlogById(id);
+        const foundBlog = await blogRepository.findBlogById(id);
         if (foundBlog) {
             return await blogRepository.updateBlog(blog, id);
         } else {
@@ -31,7 +28,7 @@ export const blogService: any = {
     },
 
     async deleteBlog(id: string): Promise<boolean> {
-        const foundBlog = await blogQueryRepository.getBlogById(id);
+        const foundBlog = await blogRepository.findBlogById(id);
         if (foundBlog) {
             return await blogRepository.deleteBlog(id);
         } else {

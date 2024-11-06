@@ -27,6 +27,14 @@ export const blogRepository = {
     async deleteAllBlogs(): Promise<boolean> {
         await blogCollection.deleteMany({});
         return true;
+    },
+
+    async findBlogById(id: string) {
+        const result = await blogCollection.findOne({_id:new ObjectId(id)});
+        if (result) {
+            return result;
+        }
+        return null;
     }
 }
 

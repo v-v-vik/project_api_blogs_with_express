@@ -1,6 +1,6 @@
 import {body} from "express-validator";
 import {checkInputErrorsMiddleware} from "./checkInputErrorsMiddleware";
-import {blogQueryRepository} from "../repositories/blogQueryRepository";
+import {blogRepository} from "../repositories/blogDbRepository";
 
 
 export const titleValidator = body('title')
@@ -19,7 +19,7 @@ export const blogIdValidator = body('blogId')
     .isString().withMessage('not string')
     .trim()
     .custom(async blogId => {
-        const blog = await blogQueryRepository.getBlogById(blogId);
+        const blog = await blogRepository.findBlogById(blogId);
         if (!blog) {
             throw new Error("invalid blogId field");
         }

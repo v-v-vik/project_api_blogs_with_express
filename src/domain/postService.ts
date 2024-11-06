@@ -1,16 +1,15 @@
 import {PostInputModel, PostInputModel2} from "../input-output-types/post types";
 import {ObjectId} from "mongodb";
-import {BlogViewModel} from "../input-output-types/blog types";
+import {BlogDBType} from "../input-output-types/blog types";
 import {postRepository} from "../repositories/postDbRepository";
-import {postQueryRepository} from "../repositories/postQueryRepository";
-import {blogQueryRepository} from "../repositories/blogQueryRepository";
+import {blogRepository} from "../repositories/blogDbRepository";
 
 
 export const postService = {
     async createPost(data: PostInputModel | PostInputModel2, blogId?:string): Promise<string | null> {
         const newId = new ObjectId();
         const resolvedBlogId: any = blogId || data.blogId;
-        const blog:BlogViewModel | null = await blogQueryRepository.getBlogById(resolvedBlogId);
+        const blog:BlogDBType | null = await blogRepository.findBlogById(resolvedBlogId);
         if (blog) {
             const newEntry = {
                 _id: newId,
@@ -24,13 +23,13 @@ export const postService = {
             return await postRepository.createPost(newEntry);
 
         }
-      return null
+      return null;
 
     },
 
 
     async updatePost(id: string, post: PostInputModel):Promise<boolean> {
-        const foundPost = await postQueryRepository.getPostById(id);
+        const foundPost = await postRepository.findPostById(id);
         if (foundPost) {
           return await postRepository.updatePost(id, post);
         } else {
@@ -39,7 +38,7 @@ export const postService = {
     },
 
     async deletePost(id: string) {
-        const foundPost = await postQueryRepository.getPostById(id);
+        const foundPost = await postRepository.findPostById(id);
         if (foundPost) {
             return await postRepository.deletePost(id);
         } else {
