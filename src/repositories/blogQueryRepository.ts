@@ -62,7 +62,7 @@ export const blogQueryRepository = {
                 .limit(pageSize)
                 .toArray() as BlogDBType[]
 
-            console.log("found items before mapping:", items)
+
 
             //Count total documents
             const totalCount = await blogCollection.countDocuments(filter);

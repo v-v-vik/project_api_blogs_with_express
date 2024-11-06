@@ -8,8 +8,6 @@ export const objectIdValidator = (req: Request <{id:string}>,
 
     const isValid: boolean = ObjectId.isValid(req.params.id);
 
-    console.log("Passed params id:", req.params.id, "Validation outcome:", isValid);
-
     if (isValid) {
         return next();
     } else {
