@@ -10,10 +10,10 @@ export type DBType = {
 }
 
 
-export const db_mockup: DBType = {
-    blogs: [],
-    posts: []
-}
+// export const db_mockup: DBType = {
+//     blogs: [],
+//     posts: []
+// }
 
 
 export const client = new MongoClient(SETTINGS.MONGO_URI);

@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import {ParamType} from "../../input-output-types/some";
-import {blogRepository} from "../../repositories/blog-db-repository";
+import {blogService} from "../../domain/blogService";
 
 
 export const deleteBlogController = async (req: Request<ParamType>,
@@ -8,11 +8,14 @@ export const deleteBlogController = async (req: Request<ParamType>,
 
     //authorisation
 
-    const isDeleted: boolean = await blogRepository.deleteBlog(req.params.id);
+
+
+    const isDeleted: boolean = await blogService.deleteBlog(req.params.id);
+
     if (isDeleted) {
         res.sendStatus(204)
     } else {
-        res.sendStatus(404)
+       res.sendStatus(404)
     }
 
 }

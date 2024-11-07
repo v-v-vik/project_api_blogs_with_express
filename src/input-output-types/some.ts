@@ -13,7 +13,11 @@ export type BodyType = {
 }
 
 export type QueryType = {
-    search?: string
+    searchNameTerm?: string | null;
+    pageNumber?: number;
+    pageSize?: number;
+    sortBy?: string;
+    sortDirection?: 'asc' | 'desc';
 }
 
 export type OutputType = void | OutputErrorsType | BlogDBType
@@ -24,3 +28,12 @@ export type OutputType = void | OutputErrorsType | BlogDBType
 // ) => {
 //
 // }
+
+export type Paginator<T> = {
+    pagesCount: number;
+    page: number;
+    pageSize: number;
+    totalCount: number;
+    items: T[];
+
+}

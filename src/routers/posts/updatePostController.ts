@@ -1,7 +1,8 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
 import {PostInputModel} from "../../input-output-types/post types";
-import {postRepository} from "../../repositories/post-db-repository";
+import {postService} from "../../domain/postService";
+import {matchedData} from "express-validator";
 
 
 export const updatePostController = async (req: Request<ParamType, any, PostInputModel>,
@@ -10,8 +11,8 @@ export const updatePostController = async (req: Request<ParamType, any, PostInpu
 
     //validation
 
-
-    const isUpdated: boolean = await postRepository.updatePost(req.params.id, req.body);
+    const data: PostInputModel = matchedData(req);
+    const isUpdated: boolean = await postService.updatePost(req.params.id, data);
     if (isUpdated) {
         res.sendStatus(204)
     } else {

@@ -1,10 +1,13 @@
 import {Request, Response} from 'express';
-import {db_mockup} from "../repositories/db";
+import {blogService} from "../domain/blogService";
+import {postService} from "../domain/postService";
 
 
+export const deleteAllDataController = async (req: Request, res: Response) => {
+    const blogsDeleted = await blogService.deleteAllBlogs();
+    const postsDeleted = await postService.deleteAllPosts();
+    if (blogsDeleted && postsDeleted) {
+        res.sendStatus(204);
+    }
 
-export const deleteAllDataController = (req: Request, res: Response) => {
-    db_mockup.blogs = [];
-    db_mockup.posts = [];
-    res.sendStatus(204);
 }
