@@ -15,7 +15,9 @@ export const emailValidator = body('email')
     .isString().withMessage('not string')
     .trim().isEmail().withMessage('not email')
 
-
+export const loginOrEmailValidator = body('loginOrEmail')
+    .isString().withMessage('not string')
+    .trim().isLength({min:3}).withMessage('Login or Email is too short')
 export const userValidators = [
     loginValidator,
     passwordValidator,

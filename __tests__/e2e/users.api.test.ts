@@ -120,3 +120,70 @@ describe(SETTINGS.PATH.USERS, () => {
 
 
 })
+
+describe(SETTINGS.PATH.AUTH, () => {
+
+    beforeAll(async () => {
+        await blogCollection.deleteMany({});
+        await postCollection.deleteMany({});
+        await userCollection.deleteMany({});
+    })
+
+    let newUser:any = null;
+    it("should login user with correct credentials provided", async() => {
+        //create user
+
+        newUser = {
+            login: "login1",
+            password: "1234567",
+            email: "email@gmail.com"
+        }
+
+        await req
+            .post(SETTINGS.PATH.USERS)
+            .set({'Authorization': 'Basic ' + encodeAuth()})
+            .send(newUser)
+
+        const credentials = {
+            loginOrEmail: "login1",
+            password: "1234567"
+        }
+
+
+        await req
+            .post(`${SETTINGS.PATH.AUTH}/login`)
+            .send(credentials)
+            .expect(204)
+
+
+
+    })
+
+    it("should not login user with wrong formatted credentials", async () => {
+        const credentials = {
+            loginOrEmail: "login1",
+            password: " "
+        }
+
+
+        await req
+            .post(`${SETTINGS.PATH.AUTH}/login`)
+            .send(credentials)
+            .expect(400)
+    })
+
+    it("should not login user with non existing credentials", async () => {
+        const credentials = {
+            loginOrEmail: "login1",
+            password: "1111111"
+        }
+
+
+        await req
+            .post(`${SETTINGS.PATH.AUTH}/login`)
+            .send(credentials)
+            .expect(401)
+    })
+
+
+})

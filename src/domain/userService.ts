@@ -29,5 +29,10 @@ export const userService = {
         } else {
            return false;
         }
+    },
+
+    async deleteAllUsers() {
+        return await userDbRepository.deleteAllUsers();
     }
+
 }
