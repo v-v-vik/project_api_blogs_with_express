@@ -1,5 +1,5 @@
-import {postCollection} from "./db";
-import {PostDBType, PostInputModel} from "../input-output-types/post types";
+import {postCollection} from "../db";
+import {PostDBType, PostInputModel} from "../../input-output-types/post types";
 import {ObjectId} from "mongodb";
 
 

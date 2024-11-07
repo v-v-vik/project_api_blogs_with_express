@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
-import {postQueryRepository} from "../../repositories/postQueryRepository";
+import {postQueryRepository} from "../../repositories/posts/postQueryRepository";
 import {ParamType, QueryType} from "../../input-output-types/some";
-import {blogQueryRepository} from "../../repositories/blogQueryRepository";
+import {blogQueryRepository} from "../../repositories/blogs/blogQueryRepository";
 
 export const findPostsByBlogIdController = async (req: Request<ParamType, any, any, QueryType>,
                                              res: Response )=> {

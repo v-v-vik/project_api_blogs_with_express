@@ -20,6 +20,15 @@ export type QueryType = {
     sortDirection?: 'asc' | 'desc';
 }
 
+export type UsersQueryFieldsType = {
+    searchLoginTerm?: string | null;
+    searchEmailTerm?: string | null;
+    pageNumber?: number;
+    pageSize?: number;
+    sortBy?: string;
+    sortDirection?: 'asc' | 'desc';
+}
+
 export type OutputType = void | OutputErrorsType | BlogDBType
 
 // export const someController = (

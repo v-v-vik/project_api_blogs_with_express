@@ -3,7 +3,7 @@ import {BlogDBType, BlogInputModel} from "../../input-output-types/blog types";
 import {OutputErrorsType} from "../../input-output-types/error output types";
 import {blogService} from "../../domain/blogService";
 import {matchedData} from "express-validator";
-import {blogQueryRepository} from "../../repositories/blogQueryRepository";
+import {blogQueryRepository} from "../../repositories/blogs/blogQueryRepository";
 
 
 export const createBlogController = async (req: Request<any, any, BlogInputModel>,
