@@ -1,4 +1,5 @@
 import {body} from "express-validator";
+import {checkInputErrorsMiddleware} from "./checkInputErrorsMiddleware";
 
 
 export const loginValidator = body('login')
@@ -18,5 +19,6 @@ export const emailValidator = body('email')
 export const userValidators = [
     loginValidator,
     passwordValidator,
-    emailValidator
+    emailValidator,
+    checkInputErrorsMiddleware
 ]
