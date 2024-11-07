@@ -20,5 +20,14 @@ export const userService = {
 
         return await userDbRepository.createUser(newUserData);
 
+    },
+
+    async deleteUser(id: string): Promise<boolean> {
+        const user = await userDbRepository.findUserById(id);
+        if (user) {
+            return await userDbRepository.deleteUser(id);
+        } else {
+           return false;
+        }
     }
 }
