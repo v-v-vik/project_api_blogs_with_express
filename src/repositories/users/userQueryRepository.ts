@@ -26,18 +26,32 @@ export const userQueryRepository = {
 
     async getUsersFilter(query: UsersQueryFieldsType) {
 
-        const filter:any = {};
+        // const filter:any = {$or: []};
+
+        const filter:any = { $or: [] };
+
+
         const searchLoginTerm = query.searchLoginTerm ?? null;
-        const searchEmailTerm = query.searchEmailTerm ?? null
+        const searchEmailTerm = query.searchEmailTerm ?? null;
+
+
+
 
         if (searchLoginTerm) {
-            filter.login = {$regex: query.searchLoginTerm, $options: 'i'}
+            filter.$or.push({login: {$regex: query.searchLoginTerm, $options: 'i'}})
         }
         if (searchEmailTerm) {
-            filter.email = {$regex: query.searchEmailTerm, $options: 'i'}
+            filter.$or.push({email: {$regex: query.searchEmailTerm, $options: 'i'}})
         }
 
+        if (filter.$or.length === 0) {
+            delete filter.$or;
+        }
+
+
         const sortResult = sortQueryFields(query);
+
+        console.log(filter)
 
 
         try {

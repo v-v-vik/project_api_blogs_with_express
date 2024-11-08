@@ -1,5 +1,5 @@
 import {UserDBType} from "../../input-output-types/user types";
-import {postCollection, userCollection} from "../db";
+import {userCollection} from "../db";
 import {ObjectId} from "mongodb";
 
 
@@ -45,7 +45,7 @@ export const userDbRepository = {
     },
 
     async deleteAllUsers(): Promise<boolean> {
-        await postCollection.deleteMany({});
+        await userCollection.deleteMany({});
         return true;
     }
 }

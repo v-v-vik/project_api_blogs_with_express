@@ -9,10 +9,8 @@ export const loginUserController = async (req: Request<any, any, LoginInputModel
 
 
     const data: LoginInputModel = matchedData(req);
-    console.log("passed data:",data);
     const isLoggedIn = await authService.loginUser(data);
-    console.log("is logged in:",isLoggedIn);
-    if (isLoggedIn === null) {
+        if (isLoggedIn === null) {
         res.sendStatus(401)
     } else {
         res.sendStatus(204)
