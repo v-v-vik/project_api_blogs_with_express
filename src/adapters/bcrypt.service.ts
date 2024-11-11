@@ -5,7 +5,7 @@ export const bcryptService = {
 
     async  passwordHash(password:string) {
 
-        const salt = await bcrypt.genSaltSync(10);
+        const salt = await bcrypt.genSalt(10);
           return bcrypt.hash(password, salt);
 },
 
