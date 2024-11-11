@@ -1,7 +1,7 @@
-import {postCollection} from "./db";
+import {postCollection} from "../db";
 import {ObjectId, Sort} from "mongodb";
-import {QueryType} from "../input-output-types/some";
-import {PostDBType} from "../input-output-types/post types";
+import {QueryType} from "../../input-output-types/some";
+import {PostDBType} from "../../input-output-types/post types";
 
 
 const postOutputMapper = (post:any) => ({
@@ -36,10 +36,10 @@ export const postQueryRepository = {
 
         console.log("filter is:", filter)
 
-        // const searchNameTerm = query.searchNameTerm ?? null;
-        // if (searchNameTerm) {
-        //  filter.title = {$regex: query.searchNameTerm, $options: 'i'};
-        // }
+        const searchNameTerm = query.searchNameTerm ?? null;
+        if (searchNameTerm) {
+         filter.title = {$regex: query.searchNameTerm, $options: 'i'};
+        }
 
         const pageNumber = query.pageNumber ? +query.pageNumber : 1;
         const pageSize = query.pageSize !== undefined ? +query.pageSize : 10;

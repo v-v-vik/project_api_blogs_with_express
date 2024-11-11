@@ -1,8 +1,8 @@
 import {PostInputModel, PostInputModel2} from "../input-output-types/post types";
 import {ObjectId} from "mongodb";
 import {BlogDBType} from "../input-output-types/blog types";
-import {postRepository} from "../repositories/postDbRepository";
-import {blogRepository} from "../repositories/blogDbRepository";
+import {postRepository} from "../repositories/posts/postDbRepository";
+import {blogRepository} from "../repositories/blogs/blogDbRepository";
 
 
 export const postService = {

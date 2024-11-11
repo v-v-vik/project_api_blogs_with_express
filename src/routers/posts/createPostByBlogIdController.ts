@@ -3,7 +3,7 @@ import {PostInputModel2} from "../../input-output-types/post types";
 import {Request, Response} from "express";
 import {matchedData} from "express-validator";
 import {postService} from "../../domain/postService";
-import {postQueryRepository} from "../../repositories/postQueryRepository";
+import {postQueryRepository} from "../../repositories/posts/postQueryRepository";
 
 
 export const createPostByBlogIdController = async (req: Request<ParamType, any, PostInputModel2>,

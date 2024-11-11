@@ -1,7 +1,7 @@
 import {ObjectId, Sort} from "mongodb";
-import {blogCollection} from "./db";
-import {QueryType} from "../input-output-types/some";
-import {BlogDBType} from "../input-output-types/blog types";
+import {blogCollection} from "../db";
+import {QueryType} from "../../input-output-types/some";
+import {BlogDBType} from "../../input-output-types/blog types";
 
 const blogOutputMapper = (blog:any) => ({
     id: blog._id.toString(),

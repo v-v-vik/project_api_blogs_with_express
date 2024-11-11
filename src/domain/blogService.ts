@@ -1,5 +1,5 @@
 import {BlogDBType, BlogInputModel} from "../input-output-types/blog types";
-import {blogRepository} from "../repositories/blogDbRepository";
+import {blogRepository} from "../repositories/blogs/blogDbRepository";
 import {ObjectId} from "mongodb";
 
 

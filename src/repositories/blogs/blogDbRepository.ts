@@ -1,5 +1,5 @@
-import {BlogDBType, BlogInputModel} from "../input-output-types/blog types";
-import {blogCollection} from "./db";
+import {BlogDBType, BlogInputModel} from "../../input-output-types/blog types";
+import {blogCollection} from "../db";
 import {ObjectId} from "mongodb";
 
 
