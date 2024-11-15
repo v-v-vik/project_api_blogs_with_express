@@ -33,6 +33,10 @@ export const userService = {
 
     async deleteAllUsers() {
         return await userDbRepository.deleteAllUsers();
+    },
+
+    async findUserById(id: string) {
+        return await userDbRepository.findUserById(id);
     }
 
 }
