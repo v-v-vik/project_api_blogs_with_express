@@ -3,7 +3,7 @@ import {userCollection} from "../db";
 import {ObjectId} from "mongodb";
 
 
-export const userDbRepository = {
+export const userRepository = {
     async createUser(data: UserDBType):Promise<string | null> {
         const result = await userCollection.insertOne(data);
         return result.insertedId.toString();

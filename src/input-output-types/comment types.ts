@@ -1,7 +1,18 @@
+import {ObjectId} from "mongodb";
 
 
 export type CommentDBType = {
-    _id: string;
+    _id: ObjectId;
+    content: string;
+    commentatorInfo: {
+        userId: string;
+        userLogin: string;
+    }
+    createdAt: string;
+}
+
+export type CommentViewModel = {
+    id: string;
     content: string;
     commentatorInfo: {
         userId: string;
