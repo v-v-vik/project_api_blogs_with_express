@@ -8,8 +8,8 @@ export const updateCommentController = async (req: Request<ParamType, any, Comme
                                            res: Response) => {
 
     const foundComment = await commentService.findCommentById(req.params.id);
-    if (!foundComment) {
-        res.status(404)
+    if (foundComment === null) {
+        res.sendStatus(404)
         return;
     }
 

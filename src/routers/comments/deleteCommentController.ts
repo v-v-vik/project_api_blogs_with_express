@@ -5,9 +5,11 @@ import {commentService} from "../../domain/commentService";
 export const deleteCommentController = async (req: Request<ParamType>,
                                            res: Response) => {
 
+
+
     const foundComment = await commentService.findCommentById(req.params.id);
-    if (!foundComment) {
-        res.status(404)
+    if (foundComment === null) {
+        res.sendStatus(404)
         return;
     }
 

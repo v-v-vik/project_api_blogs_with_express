@@ -135,10 +135,10 @@ describe(SETTINGS.PATH.COMMENTS, () => {
         await req
             .get(`${SETTINGS.PATH.POSTS}/${postId}/comments`)
             .expect(200, {
-                pagesCount: 0,
+                pagesCount: 1,
                 page: 1,
                 pageSize: 10,
-                totalCount: 0,
+                totalCount: 1,
                 items: [{ ...newComment }]
             })
     })
@@ -198,6 +198,13 @@ describe(SETTINGS.PATH.COMMENTS, () => {
             })
             .expect(401)
 
+    })
+
+    it('should not delete comment with wrong Id', async () => {
+        await req
+            .delete(`${SETTINGS.PATH.COMMENTS}/-1231335465}`)
+            .set({'Authorization': 'Bearer ' + token})
+            .expect(404)
     })
 
 

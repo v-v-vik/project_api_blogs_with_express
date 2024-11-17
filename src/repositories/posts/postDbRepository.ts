@@ -33,9 +33,9 @@ export const postRepository = {
 
     async findPostById(id: string)  {
         const result = await postCollection.findOne({_id:new ObjectId(id)});
-        if (result) {
-            return result;
+        if (!result) {
+            return null;
         }
-        return null;
+        return result;
     }
 }

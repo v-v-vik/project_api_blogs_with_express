@@ -28,6 +28,7 @@ export const commentQueryRepository = {
         const sortResult = sortQueryFields(query);
 
 
+
         try {
             const items = await commentCollection
                 .find({postId:id})
@@ -36,9 +37,10 @@ export const commentQueryRepository = {
                 .limit(sortResult.pageSize)
                 .toArray() as CommentDBType[]
 
-            console.log("foundItems:", items)
 
-            const totalCount = await commentCollection.countDocuments({_id:new ObjectId(id)});
+
+            const totalCount = await commentCollection.countDocuments({postId:id});
+
             const mappedComments = items.map((comment) => commentOutputMapper(comment));
 
             return {
