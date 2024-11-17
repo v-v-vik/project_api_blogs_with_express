@@ -25,5 +25,28 @@ export const commentService = {
         }
         return null;
 
+    },
+    async deleteAllComments() {
+        return await commentRepository.deleteAllComments();
+    },
+
+    async findCommentById(id: string) {
+        return await commentRepository.findCommentById(id);
+    },
+
+    async deleteComment(id: string, userId: string, comment: CommentDBType): Promise<boolean> {
+        if (userId === comment.commentatorInfo.userId) {
+              return await commentRepository.deleteComment(id);
+            }
+        return false;
+
+
+    },
+
+    async updateComment(postId: string, data: CommentInputModel, userId: string, comment: CommentDBType): Promise<boolean> {
+        if(userId === comment.commentatorInfo.userId) {
+            return await commentRepository.updateComment(data, postId);
+        }
+        return false;
     }
 }
