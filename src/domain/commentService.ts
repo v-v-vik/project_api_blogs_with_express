@@ -7,7 +7,7 @@ import {commentRepository} from "../repositories/comments/commentDbRepository";
 export const commentService = {
     async createComment(data: CommentInputModel, postId:string, userId: string): Promise<string | null> {
         const newId = new ObjectId();
-        const foundUser = await userService.findUserById(postId);
+        const foundUser = await userService.findUserById(userId);
 
         if (foundUser) {
             const newEntry: CommentDBType = {
@@ -17,7 +17,8 @@ export const commentService = {
                     userId: userId,
                     userLogin: foundUser.login
                 },
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                postId:postId
             }
 
             return await commentRepository.createComment(newEntry);

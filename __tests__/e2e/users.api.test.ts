@@ -153,7 +153,7 @@ describe(SETTINGS.PATH.AUTH, () => {
         await req
             .post(`${SETTINGS.PATH.AUTH}/login`)
             .send(credentials)
-            .expect(204)
+            .expect(200)
 
 
 

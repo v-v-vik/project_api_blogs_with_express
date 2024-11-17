@@ -65,7 +65,6 @@ export const userQueryRepository = {
 
         const sortResult = sortQueryFields(query);
 
-        console.log(filter)
 
 
         try {

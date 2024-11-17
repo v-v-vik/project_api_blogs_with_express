@@ -9,6 +9,7 @@ export type CommentDBType = {
         userLogin: string;
     }
     createdAt: string;
+    postId: string;
 }
 
 export type CommentViewModel = {
