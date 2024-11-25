@@ -35,7 +35,7 @@ export const commentService = {
         return await commentRepository.findCommentById(id);
     },
 
-    async deleteComment(id: string, userId: string, comment: CommentDBType): Promise<boolean> {
+    async deleteComment(id: string, userId: string, comment: CommentDBType) {
         if (userId === comment.commentatorInfo.userId) {
               return await commentRepository.deleteComment(id);
             }

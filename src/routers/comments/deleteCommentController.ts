@@ -13,7 +13,7 @@ export const deleteCommentController = async (req: Request<ParamType>,
         return;
     }
 
-    const isDeleted: boolean = await commentService.deleteComment(req.params.id, req.user.id, foundComment);
+    const isDeleted = await commentService.deleteComment(req.params.id, req.user.id, foundComment);
 
     if (isDeleted) {
         res.sendStatus(204)
