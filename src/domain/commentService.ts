@@ -2,6 +2,7 @@ import {CommentDBType, CommentInputModel} from "../input-output-types/comment ty
 import {ObjectId} from "mongodb";
 import {userService} from "./userService";
 import {commentRepository} from "../repositories/comments/commentDbRepository";
+import {ResultStatus} from "../result-object/result code";
 
 
 export const commentService = {
@@ -43,10 +44,22 @@ export const commentService = {
 
     },
 
-    async updateComment(postId: string, data: CommentInputModel, userId: string, comment: CommentDBType): Promise<boolean> {
-        if(userId === comment.commentatorInfo.userId) {
-            return await commentRepository.updateComment(data, postId);
+    async updateComment(id: string, data: CommentInputModel, userId: string) {
+
+        const foundComment = await commentService.findCommentById(id);
+        if (foundComment === null) {
+            return {
+                status: ResultStatus.NotFound,
+                data: null
+            };
         }
-        return false;
+
+        if(userId === foundComment.commentatorInfo.userId) {
+            return await commentRepository.updateComment(data, id);
+        }
+        return {
+            status: ResultStatus.Forbidden,
+            data: null
+        };
     }
 }

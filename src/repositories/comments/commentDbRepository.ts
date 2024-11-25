@@ -1,6 +1,7 @@
 import {CommentDBType, CommentInputModel} from "../../input-output-types/comment types";
 import {commentCollection} from "../db";
 import {ObjectId} from "mongodb";
+import {ResultStatus} from "../../result-object/result code";
 
 
 export const commentRepository = {
@@ -24,9 +25,8 @@ export const commentRepository = {
     },
 
     async deleteComment(id: string) {
-        const result = await commentCollection.deleteOne({_id:new ObjectId(id)});
-        if (!result) return false;
-        return true;
+        return await commentCollection.deleteOne({_id: new ObjectId(id)});
+
     },
 
     async updateComment(data: CommentInputModel, id: string) {
@@ -36,7 +36,16 @@ export const commentRepository = {
                 $set: {...data}
             }
         );
-        return result.matchedCount === 1;
+        if (result.matchedCount === 1) {
+            return {
+                status: ResultStatus.NoContent,
+                data: null
+            }
+        }
+        return {
+            status: ResultStatus.NotFound,
+            data: null
+        }
     }
 
 
