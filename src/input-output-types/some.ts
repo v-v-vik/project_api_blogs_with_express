@@ -20,6 +20,7 @@ export type QueryType = {
     sortDirection?: 'asc' | 'desc';
 }
 
+
 export type UsersQueryFieldsType = {
     searchLoginTerm?: string | null;
     searchEmailTerm?: string | null;

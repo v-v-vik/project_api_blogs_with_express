@@ -27,3 +27,12 @@ export type LoginInputModel = {
     password: string;
 }
 
+export type MeViewModel = {
+    email: string;
+    login: string;
+    userId: string;
+}
+
+export type LoginSuccessViewModel = {
+    accessToken: string;
+}

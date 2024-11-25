@@ -12,8 +12,22 @@ const userOutputMapper = (user:any) => ({
     createdAt: user.createdAt
 })
 
+const userAuthOutputMapper = (user:any) => ({
+    login: user.login,
+    email: user.email,
+    userId: user._id.toString()
+})
+
 
 export const userQueryRepository = {
+
+    async getMeInfo(id: string){
+      const result = await userCollection.findOne({_id:new ObjectId(id)});
+      if (!result) {
+          return null;
+      }
+      return userAuthOutputMapper(result);
+    },
 
     async getUserById(id: string){
         const result = await userCollection.findOne({_id:new ObjectId(id)});
@@ -51,7 +65,6 @@ export const userQueryRepository = {
 
         const sortResult = sortQueryFields(query);
 
-        console.log(filter)
 
 
         try {

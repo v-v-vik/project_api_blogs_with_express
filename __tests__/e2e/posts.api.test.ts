@@ -81,15 +81,6 @@ describe(SETTINGS.PATH.POSTS, () => {
                 totalCount: await postCollection.countDocuments(),
                 items: [
                     {
-                        id: Post2._id.toString(),
-                        title: Post2.title,
-                        shortDescription: Post2.shortDescription,
-                        content: Post2.content,
-                        blogId: Post2.blogId,
-                        blogName: Post2.blogName,
-                        createdAt: Post2.createdAt
-                    },
-                    {
                         id: Post1._id.toString(),
                         title: Post1.title,
                         shortDescription: Post1.shortDescription,
@@ -97,6 +88,15 @@ describe(SETTINGS.PATH.POSTS, () => {
                         blogId: Post1.blogId,
                         blogName: Post1.blogName,
                         createdAt: Post1.createdAt
+                    },
+                    {
+                        id: Post2._id.toString(),
+                        title: Post2.title,
+                        shortDescription: Post2.shortDescription,
+                        content: Post2.content,
+                        blogId: Post2.blogId,
+                        blogName: Post2.blogName,
+                        createdAt: Post2.createdAt
                     }
                 ]
             })
