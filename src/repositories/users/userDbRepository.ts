@@ -77,7 +77,7 @@ export const userRepository = {
         const result = await userCollection.updateOne(
             {_id:new ObjectId(id)},
             {
-                $set: {"emailConfirmation.status": 1}
+                $set: {"emailConfirmation.confirmationCode": code}
             }
         );
         return result.matchedCount === 1;

@@ -32,7 +32,7 @@ export const authService = {
 
         return {
             status: ResultStatus.Success,
-            data: accessToken
+            data: {accessToken}
         }
     },
 
@@ -106,19 +106,24 @@ export const authService = {
         console.log("user to confirm:", user)
         if (!user) return {
             status: ResultStatus.BadRequest,
-            data: { ErrorMessage: "The user with this code does not exist" }
+            data: { errorsMessages: [{field: 'code', message: 'code does not exist'}] }
         }
+
+        if (user.emailConfirmation.status === 1) return {
+            status: ResultStatus.BadRequest,
+            data: { errorsMessages: [{field: 'code', message: 'user is confirmed'}] }
+        }
+
 
         if (user.emailConfirmation.confirmationCode === code && user.emailConfirmation.expirationDate > new Date()) {
             const userId = user._id.toString();
             console.log("this user id", userId);
             return await userRepository.updateRegistrationStatus(userId);
-
         }
 
         return {
             status: ResultStatus.BadRequest,
-            data: { ErrorMessage: "The code does not exist or expired" }
+            data: { errorsMessages: [{field: 'code', message: 'code expired'}] }
         }
 
     },
