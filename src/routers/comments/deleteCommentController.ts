@@ -8,6 +8,7 @@ export const deleteCommentController = async (req: Request<ParamType>,
 
 
     const foundComment = await commentService.findCommentById(req.params.id);
+    console.log("found comment is:",foundComment);
     if (foundComment === null) {
         res.sendStatus(404)
         return;

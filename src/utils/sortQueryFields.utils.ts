@@ -17,7 +17,7 @@ export const sortQueryFields = (query: QueryType) => {
 
     const skip = (pageNumber - 1) * pageSize;
 
-    const result = {
+    return {
         pageNumber,
         pageSize,
         skip,
@@ -25,5 +25,4 @@ export const sortQueryFields = (query: QueryType) => {
 
     }
 
-    return result
 }

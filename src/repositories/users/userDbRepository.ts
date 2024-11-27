@@ -1,6 +1,7 @@
-import {UserDBType} from "../../input-output-types/user types";
+import {UserDBType} from "../../input-output-types/user auth types";
 import {userCollection} from "../db";
 import {ObjectId} from "mongodb";
+import {ResultStatus} from "../../result-object/result code";
 
 
 export const userRepository = {
@@ -12,8 +13,8 @@ export const userRepository = {
     async findUserByEmailOrLogin(login: string, email: string) {
         const user = await userCollection.findOne({
             $or: [
-                {login},
-                {email}
+                {"accountData.login": login},
+                {"accountData.email": email}
             ]
         });
         if (!user) {
@@ -25,8 +26,8 @@ export const userRepository = {
     async checkUserByEmailOrLogin(loginOrEmail: string) {
         const user = await userCollection.findOne({
             $or: [
-                {login: loginOrEmail},
-                {email: loginOrEmail}
+                {"accountData.login": loginOrEmail},
+                {"accountData.email": loginOrEmail}
             ]
         });
         if (!user) {
@@ -47,5 +48,41 @@ export const userRepository = {
     async deleteAllUsers(): Promise<boolean> {
         await userCollection.deleteMany({});
         return true;
+    },
+
+    async findUserByCode(code: string): Promise<UserDBType | null> {
+       return await userCollection.findOne({"emailConfirmation.confirmationCode" : code})
+    },
+
+    async updateRegistrationStatus(id: string) {
+        const result = await userCollection.updateOne(
+            {_id:new ObjectId(id)},
+            {
+                $set: {"emailConfirmation.status": 1}
+            }
+        );
+        if (result.matchedCount === 1) {
+            return {
+                status: ResultStatus.NoContent,
+                data: null
+            }
+        }
+        return {
+            status: ResultStatus.NotFound,
+            data: null
+        }
+    },
+
+    async confirmationCodeUpdate(code: string, id: string): Promise<boolean> {
+        const result = await userCollection.updateOne(
+            {_id:new ObjectId(id)},
+            {
+                $set: {"emailConfirmation.confirmationCode": code}
+            }
+        );
+        return result.matchedCount === 1;
+
+
+
     }
 }
