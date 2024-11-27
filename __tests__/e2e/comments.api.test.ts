@@ -5,6 +5,7 @@ import {app} from "../../src/app";
 import {ObjectId} from "mongodb";
 import {bcryptService} from "../../src/adapters/bcrypt.service";
 import {CommentViewModel} from "../../src/input-output-types/comment types";
+import {randomUUID} from "node:crypto";
 
 const req = agent(app);
 
@@ -49,10 +50,17 @@ describe(SETTINGS.PATH.COMMENTS, () => {
         const hashedPass = await bcryptService.passwordHash("password12345");
         await userCollection.insertOne({
             _id: userId,
-            login: userLogin,
-            email: "email123@gmail.com",
-            password: hashedPass,
-            createdAt: new Date().toISOString()
+            accountData: {
+                login: userLogin,
+                email: "email123@gmail.com",
+                password: hashedPass,
+                createdAt: new Date().toISOString()
+            },
+            emailConfirmation: {
+                confirmationCode: randomUUID(),
+                expirationDate: new Date(),
+                status: 1
+            }
         });
 
     });
@@ -69,7 +77,8 @@ describe(SETTINGS.PATH.COMMENTS, () => {
                 password: "password12345"
             })
 
-        token = res.body.accessToken;
+        token = res.body;
+
 
 
         const postIdParams = postId.toString()

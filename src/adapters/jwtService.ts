@@ -1,4 +1,4 @@
-import {UserDBType} from "../input-output-types/user types";
+import {UserDBType} from "../input-output-types/user auth types";
 import jwt from "jsonwebtoken";
 import {SETTINGS} from "../settings";
 

@@ -2,7 +2,7 @@ import {BlogDBType} from "../input-output-types/blog types";
 import {PostDBType} from "../input-output-types/post types";
 import {SETTINGS} from "../settings";
 import {MongoClient} from "mongodb";
-import {UserDBType} from "../input-output-types/user types";
+import {UserDBType} from "../input-output-types/user auth types";
 import {CommentDBType} from "../input-output-types/comment types";
 
 

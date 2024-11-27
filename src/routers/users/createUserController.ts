@@ -1,4 +1,4 @@
-import {UserInputModel} from "../../input-output-types/user types";
+import {UserInputModel} from "../../input-output-types/user auth types";
 import {Request, Response} from "express";
 import {matchedData} from "express-validator";
 import {userService} from "../../domain/userService";
@@ -11,16 +11,16 @@ export const createUserController = async (req: Request<any, any, UserInputModel
     //validation
     const data:UserInputModel = matchedData(req);
 
-    const newUserId = await userService.createUser(data);
-    if (newUserId === null) {
+    const result = await userService.createUser(data);
+    if (result === null) {
         res
             .status(409)
             .json({
-                errorsMessages: [{field: 'email', message: 'email should be unique'}]
+                errorsMessages: [{field: 'email/login', message: 'email or login already exist'}]
             })
         return;
     }
-    const newUser = await userQueryRepository.getUserById(newUserId);
+    const newUser = await userQueryRepository.getUserById(result);
 
     res
         .status(201)

@@ -6,6 +6,7 @@ export const findCommentsByPostIdController = async (req: Request,
                                                      res: Response) => {
 
     const foundPost = await postService.findPostById(req.params.id);
+
     if (foundPost === null) {
         res.sendStatus(404)
         return;

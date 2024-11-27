@@ -1,7 +1,8 @@
 import {Request, Response} from 'express';
-import {LoginInputModel} from "../../input-output-types/user types";
+import {LoginInputModel} from "../../input-output-types/user auth types";
 import {matchedData} from "express-validator";
 import {authService} from "../../domain/authService";
+import {HttpStatuses, ResultStatus} from "../../result-object/result code";
 
 
 export const loginUserController = async (req: Request<any, any, LoginInputModel>,
@@ -9,13 +10,19 @@ export const loginUserController = async (req: Request<any, any, LoginInputModel
 
 
     const data: LoginInputModel = matchedData(req);
-    const accessToken = await authService.loginUser(data);
-
-    if (!accessToken) {
-        res.sendStatus(401);
+    const result = await authService.loginUser(data);
+    if (result === null) {
+        res.status(HttpStatuses.BadRequest)
         return;
     }
 
-    res.status(200).json({accessToken});
+    if (result.status === ResultStatus.Unauthorized) {
+        res.sendStatus(HttpStatuses.Unauthorized)
+        return;
+    }
+
+    res
+        .status(HttpStatuses.Success)
+        .json(result.data);
 
 }

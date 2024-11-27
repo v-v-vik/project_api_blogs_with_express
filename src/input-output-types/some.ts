@@ -47,3 +47,7 @@ export type Paginator<T> = {
     items: T[];
 
 }
+
+export type RegistrationConfirmationCodeModel = {
+    code: string
+}

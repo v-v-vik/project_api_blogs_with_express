@@ -4,7 +4,7 @@ import {matchedData} from "express-validator";
 import {CommentInputModel} from "../../input-output-types/comment types";
 import {commentService} from "../../domain/commentService";
 import {ResultStatus} from "../../result-object/result code";
-import {HttpStatuses, resultCodeToHttpException} from "../../result-object/resultCodeToHttpException";
+import {HttpStatuses, resultCode} from "../../result-object/result code";
 
 export const updateCommentController = async (req: Request<ParamType, any, CommentInputModel>,
                                            res: Response) => {
@@ -12,8 +12,9 @@ export const updateCommentController = async (req: Request<ParamType, any, Comme
 
     const data: CommentInputModel = matchedData(req);
     const result = await commentService.updateComment(req.params.id, data, req.user.id);
+    console.log("result:", result)
     if (result.status !== ResultStatus.NoContent) {
-        res.status(resultCodeToHttpException(result.status)).send();
+        res.status(resultCode(result.status)).send();
         return;
     }
      res.status(HttpStatuses.NoContent).send();

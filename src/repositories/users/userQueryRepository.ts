@@ -1,20 +1,20 @@
 import {UsersQueryFieldsType} from "../../input-output-types/some";
 import {ObjectId} from "mongodb";
 import {userCollection} from "../db";
-import {UserDBType} from "../../input-output-types/user types";
+import {UserDBType} from "../../input-output-types/user auth types";
 import {sortQueryFields} from "../../utils/sortQueryFields.utils";
 
 
 const userOutputMapper = (user:any) => ({
     id: user._id.toString(),
-    login: user.login,
-    email: user.email,
-    createdAt: user.createdAt
+    login: user.accountData.login,
+    email: user.accountData.email,
+    createdAt: user.accountData.createdAt
 })
 
 const userAuthOutputMapper = (user:any) => ({
-    login: user.login,
-    email: user.email,
+    login: user.accountData.login,
+    email: user.accountData.email,
     userId: user._id.toString()
 })
 
@@ -52,10 +52,10 @@ export const userQueryRepository = {
 
 
         if (searchLoginTerm) {
-            filter.$or.push({login: {$regex: query.searchLoginTerm, $options: 'i'}})
+            filter.$or.push({"accountData.login": {$regex: query.searchLoginTerm, $options: 'i'}})
         }
         if (searchEmailTerm) {
-            filter.$or.push({email: {$regex: query.searchEmailTerm, $options: 'i'}})
+            filter.$or.push({"accountData.email": {$regex: query.searchEmailTerm, $options: 'i'}})
         }
 
         if (filter.$or.length === 0) {
