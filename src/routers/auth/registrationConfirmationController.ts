@@ -11,7 +11,7 @@ export const registrationConfirmationController = async (req: Request<any, any, 
 
     const data: RegistrationConfirmationCodeModel = matchedData(req);
 
-    console.log(data)
+
     const result = await authService.confirmRegistration(data.code);
     if (result.status !== ResultStatus.NoContent) {
         res.status(resultCode(result.status)).send(result.data);

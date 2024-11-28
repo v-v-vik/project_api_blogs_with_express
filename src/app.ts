@@ -7,10 +7,12 @@ import {postRouter} from "./routers/posts/posts-router";
 import {userRouter} from "./routers/users/users-router";
 import {authRouter} from "./routers/auth/auth-router";
 import {commentRouter} from "./routers/comments/comments-router";
+import cookieParser from "cookie-parser";
 
 export const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser())
 
 
 // app.get("/", (req, res) => {

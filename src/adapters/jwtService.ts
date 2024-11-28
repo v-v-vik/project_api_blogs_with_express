@@ -1,17 +1,38 @@
-import {UserDBType} from "../input-output-types/user auth types";
 import jwt from "jsonwebtoken";
 import {SETTINGS} from "../settings";
 
 export const jwtService = {
-    createJWT(user: UserDBType) {
-        return jwt.sign({id: user._id}, SETTINGS.JWT_SECRET, {expiresIn: '1h'});
+    createAccessToken(id: string) {
+        return jwt.sign({id}, SETTINGS.ACCESS_TOKEN_SECRET, {expiresIn: '10s'});
     },
 
-    getUserIdByToken(token: string) {
+    createRefreshToken(id: string) {
+        return jwt.sign({id}, SETTINGS.REFRESH_TOKEN_SECRET, {expiresIn: '20s'})
+    },
+
+    getUserIdByAccessToken(token: string) {
         try {
-            return jwt.verify(token, SETTINGS.JWT_SECRET) as { id: string };
+            return jwt.verify(token, SETTINGS.ACCESS_TOKEN_SECRET) as { id: string };
         } catch (error) {
             console.error("Error while token verification");
+            return null;
+        }
+    },
+
+    verifyRefreshToken(token: string) {
+        try {
+            return jwt.verify(token, SETTINGS.REFRESH_TOKEN_SECRET);
+        } catch (error) {
+            console.error("Error while token verification");
+            return null;
+        }
+    },
+
+    decodeToken(token: string) {
+        try {
+            return jwt.decode(token);
+        } catch (error) {
+            console.error("Error while token decoding");
             return null;
         }
     }
