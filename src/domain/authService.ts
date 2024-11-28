@@ -9,6 +9,9 @@ import {emailTemplates} from "../adapters/emailTemplates";
 import {ResultStatus} from "../result-object/result code";
 import {userService} from "./userService";
 import {ObjectId} from "mongodb";
+import {tokenRepository} from "../repositories/guard/tokenRepository";
+import {Payload} from "../input-output-types/token";
+
 
 
 export const authService = {
@@ -28,12 +31,17 @@ export const authService = {
             }
         }
 
-        const accessToken = jwtService.createJWT(user);
+        const accessToken = jwtService.createAccessToken(user._id.toString());
+        const refreshToken = jwtService.createRefreshToken(user._id.toString());
+
 
         return {
             status: ResultStatus.Success,
-            data: {accessToken}
+            data: [accessToken, refreshToken]
         }
+
+
+
     },
 
     async checkCredentials(loginOrEmail: string, password: string) {
@@ -154,6 +162,28 @@ export const authService = {
                 emailTemplates.registrationEmail
             )
             .catch(error => console.log("error when trying to send email", error))
+
+        return {
+            status: ResultStatus.NoContent,
+            data: null
+        }
+    },
+
+    async refreshToken(oldToken: string, userData: Payload) {
+        await tokenRepository.addToken(oldToken, new Date(userData.exp * 1000));
+        const userId = userData.id;
+        const newAccessToken = jwtService.createAccessToken(userId);
+        const newRefreshToken = jwtService.createRefreshToken(userId);
+
+        return {
+            status: ResultStatus.Success,
+            data: [newAccessToken, newRefreshToken]
+        }
+
+    },
+
+    async logout(token: string, userData: Payload) {
+        await tokenRepository.addToken(token, new Date(userData.exp * 1000));
 
         return {
             status: ResultStatus.NoContent,

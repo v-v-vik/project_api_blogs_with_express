@@ -4,6 +4,7 @@ import {SETTINGS} from "../settings";
 import {MongoClient} from "mongodb";
 import {UserDBType} from "../input-output-types/user auth types";
 import {CommentDBType} from "../input-output-types/comment types";
+import {refreshTokenBlacklistDBModel} from "../input-output-types/token";
 
 
 export type DBType = {
@@ -27,8 +28,10 @@ export const blogCollection = db.collection<BlogDBType>(SETTINGS.PATH.BLOGS);
 export const postCollection = db.collection<PostDBType>(SETTINGS.PATH.POSTS);
 export const userCollection = db.collection<UserDBType>(SETTINGS.PATH.USERS);
 export const commentCollection = db.collection<CommentDBType>(SETTINGS.PATH.COMMENTS);
+export const tokenCollection = db.collection<refreshTokenBlacklistDBModel>("refreshTokenBlacklist");
 
 export async function runDB() {
+
     try {
         await client.connect();
         await db.command({ ping:1 });

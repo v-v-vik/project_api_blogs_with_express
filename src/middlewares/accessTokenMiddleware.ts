@@ -12,7 +12,7 @@ export const accessTokenMiddleware = async (req: Request,
 
     const token = req.headers.authorization.split(' ')[1];
 
-    const tokenUserId = jwtService.getUserIdByToken(token);
+    const tokenUserId = jwtService.getUserIdByAccessToken(token);
     if (!tokenUserId) {
         res.sendStatus(401);
         return;
