@@ -9,7 +9,7 @@ import {emailTemplates} from "../adapters/emailTemplates";
 import {ResultStatus} from "../result-object/result code";
 import {userService} from "./userService";
 import {ObjectId} from "mongodb";
-import {tokenRepository} from "../repositories/guard/tokenRepository";
+import {sessionRepository} from "../repositories/guard/sessionRepository";
 import {Payload} from "../input-output-types/token";
 
 
@@ -31,8 +31,9 @@ export const authService = {
             }
         }
 
+        const dId = randomUUID();
         const accessToken = jwtService.createAccessToken(user._id.toString());
-        const refreshToken = jwtService.createRefreshToken(user._id.toString());
+        const refreshToken = jwtService.createRefreshToken(user._id.toString(),dId);
 
 
         return {
@@ -169,25 +170,19 @@ export const authService = {
         }
     },
 
-    async refreshToken(oldToken: string, userData: Payload) {
-        await tokenRepository.addToken(oldToken, new Date(userData.exp * 1000));
-        const userId = userData.id;
+    async refreshToken(userData: Payload, ip: string, device: string) {
+        const userId = userData.userId;
+        const dId = randomUUID();
         const newAccessToken = jwtService.createAccessToken(userId);
-        const newRefreshToken = jwtService.createRefreshToken(userId);
+        const newRefreshToken = jwtService.createRefreshToken(userId, dId);
+        await sessionRepository.addSession(userData, ip, device, dId)
 
         return {
             status: ResultStatus.Success,
             data: [newAccessToken, newRefreshToken]
         }
 
-    },
-
-    async logout(token: string, userData: Payload) {
-        await tokenRepository.addToken(token, new Date(userData.exp * 1000));
-
-        return {
-            status: ResultStatus.NoContent,
-            data: null
-        }
     }
+
+
 }
