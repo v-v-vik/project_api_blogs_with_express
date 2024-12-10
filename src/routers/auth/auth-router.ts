@@ -16,15 +16,16 @@ import {regEmailResendingController} from "./regEmailResendingController";
 import {refreshTokenMiddleware} from "../../middlewares/refreshTokenMiddleware";
 import {refreshTokenController} from "./refreshTokenController";
 import {logoutController} from "./logoutController";
+import {rateLimitMiddleware} from "../../middlewares/rate limits/rateLimit";
 
 
 export const authRouter = Router();
 
 
-authRouter.post("/login", loginOrEmailValidator, passwordValidator, checkInputErrorsMiddleware, loginUserController)
+authRouter.post("/login", rateLimitMiddleware, loginOrEmailValidator, passwordValidator, checkInputErrorsMiddleware, loginUserController)
 authRouter.get("/me", accessTokenMiddleware, aboutUserController)
-authRouter.post("/registration", loginValidator, emailValidator, passwordValidator, checkInputErrorsMiddleware, registrationController)
-authRouter.post("/registration-confirmation", codeValidator, checkInputErrorsMiddleware, registrationConfirmationController)
-authRouter.post("/registration-email-resending", emailValidator, checkInputErrorsMiddleware, regEmailResendingController)
+authRouter.post("/registration", rateLimitMiddleware, loginValidator, emailValidator, passwordValidator, checkInputErrorsMiddleware, registrationController)
+authRouter.post("/registration-confirmation", rateLimitMiddleware, codeValidator, checkInputErrorsMiddleware, registrationConfirmationController)
+authRouter.post("/registration-email-resending", rateLimitMiddleware, emailValidator, checkInputErrorsMiddleware, regEmailResendingController)
 authRouter.post("/refresh-token", refreshTokenMiddleware, refreshTokenController)
 authRouter.post("/logout", refreshTokenMiddleware, logoutController)

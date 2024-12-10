@@ -2,7 +2,7 @@ import {BlogDBType} from "../input-output-types/blog types";
 import {PostDBType} from "../input-output-types/post types";
 import {SETTINGS} from "../settings";
 import {MongoClient} from "mongodb";
-import {DeviceAuthSessionDBModel, UserDBType} from "../input-output-types/user auth types";
+import {DeviceAuthSessionDBModel, RequestLogDBModel, UserDBType} from "../input-output-types/user auth types";
 import {CommentDBType} from "../input-output-types/comment types";
 
 
@@ -29,6 +29,7 @@ export const postCollection = db.collection<PostDBType>(SETTINGS.PATH.POSTS);
 export const userCollection = db.collection<UserDBType>(SETTINGS.PATH.USERS);
 export const commentCollection = db.collection<CommentDBType>(SETTINGS.PATH.COMMENTS);
 export const sessionCollection = db.collection<DeviceAuthSessionDBModel>("deviceAuthSessions");
+export const requestCollection = db.collection<RequestLogDBModel>("requestLogs");
 
 export async function runDB() {
 

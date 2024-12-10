@@ -73,3 +73,10 @@ export type DeviceAuthSessionDBModel = {
     deviceId: string;
     userId: string;
 };
+
+export type RequestLogDBModel = {
+    ip: string;
+    url: string;
+    date: Date;
+
+}

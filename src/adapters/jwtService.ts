@@ -28,12 +28,12 @@ export const jwtService = {
         }
     },
 
-    decodeToken(token: string) {
-        try {
-            return jwt.decode(token);
-        } catch (error) {
-            console.error("Error while token decoding");
-            return null;
-        }
-    }
+    // decodeToken(token: string) {
+    //     try {
+    //         return jwt.decode(token);
+    //     } catch (error) {
+    //         console.error("Error while token decoding");
+    //         return null;
+    //     }
+    // }
 }

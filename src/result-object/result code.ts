@@ -11,7 +11,8 @@ export enum ResultStatus {
     Unauthorized = 'Unauthorized',
     BadRequest = 'BadRequest',
     Created = 'Created',
-    NoContent = 'NoContent'
+    NoContent = 'NoContent',
+    TooManyRequests = 'TooManyRequests',
 
 }
 
@@ -24,6 +25,7 @@ export enum HttpStatuses {
     Forbidden = 403,
     NotFound = 404,
     ServerError = 500,
+    TooManyRequests = 429
 }
 
 export const resultCode = (resultCode: ResultStatus): number => {
@@ -42,6 +44,8 @@ export const resultCode = (resultCode: ResultStatus): number => {
             return HttpStatuses.Unauthorized;
         case ResultStatus.NotFound:
             return HttpStatuses.NotFound;
+        case ResultStatus.TooManyRequests:
+            return HttpStatuses.TooManyRequests;
 
         default:
             return HttpStatuses.ServerError;
