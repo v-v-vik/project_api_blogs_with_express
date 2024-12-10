@@ -9,10 +9,12 @@ export const requestLogger = async (request: Request,
     const date: Date = new Date();
     const url = request.baseUrl;
     const ip = request.ip || request.socket.remoteAddress;
+
     if (ip) {
         const result = await requestRepository.logRequest(date, url, ip);
         if (result) {
             next();
+            return;
         }
     }
 
