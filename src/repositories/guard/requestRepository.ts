@@ -13,6 +13,10 @@ export const requestRepository = {
             url,
             date: { $gte: date }
         })
+    },
+
+    async deleteAllRequests() {
+       return await requestCollection.deleteMany({});
     }
 
 }

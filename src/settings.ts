@@ -12,6 +12,7 @@ export const SETTINGS = {
         USERS: "/users",
         AUTH: "/auth",
         COMMENTS: "/comments",
+        SECURITY: "/security/devices"
     },
     ADMIN: process.env.ADMIN || 'admin:qwerty',
     MONGO_URI: process.env.mongoURI || "mongodb://localhost:27017",

@@ -15,7 +15,7 @@ import {Payload} from "../input-output-types/token";
 
 
 export const authService = {
-    async loginUser(data: LoginInputModel) {
+    async loginUser(data: LoginInputModel, ip: string, deviceName: string) {
         const { loginOrEmail, password } = data;
         const user = await this.checkCredentials(loginOrEmail, password);
 
@@ -35,11 +35,19 @@ export const authService = {
         const accessToken = jwtService.createAccessToken(user._id.toString());
         const refreshToken = jwtService.createRefreshToken(user._id.toString(),dId);
 
-
-        return {
-            status: ResultStatus.Success,
-            data: [accessToken, refreshToken]
+        const payload = jwtService.verifyRefreshToken(refreshToken) as Payload;
+        const result = await sessionRepository.addSession(payload, ip, deviceName, dId);
+        if (result) {
+            return {
+                status: ResultStatus.Success,
+                data: [accessToken, refreshToken]
+            }
         }
+        return {
+            status: ResultStatus.BadRequest,
+            data: null
+        }
+
 
 
 
@@ -170,12 +178,13 @@ export const authService = {
         }
     },
 
-    async refreshToken(userData: Payload, ip: string, device: string) {
+    async refreshToken(userData: Payload) {
         const userId = userData.userId;
         const dId = randomUUID();
         const newAccessToken = jwtService.createAccessToken(userId);
         const newRefreshToken = jwtService.createRefreshToken(userId, dId);
-        await sessionRepository.addSession(userData, ip, device, dId)
+        const newTokenDate = jwtService.verifyRefreshToken(newRefreshToken) as { iat: number };
+        await sessionRepository.updateSession(userData, dId, userId, newTokenDate.iat)
 
         return {
             status: ResultStatus.Success,

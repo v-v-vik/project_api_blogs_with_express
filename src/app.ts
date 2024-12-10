@@ -8,6 +8,7 @@ import {userRouter} from "./routers/users/users-router";
 import {authRouter} from "./routers/auth/auth-router";
 import {commentRouter} from "./routers/comments/comments-router";
 import cookieParser from "cookie-parser";
+import {sessionRouter} from "./routers/security/sessions-router";
 
 export const app = express();
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use(SETTINGS.PATH.POSTS, postRouter);
 app.use(SETTINGS.PATH.USERS, userRouter);
 app.use(SETTINGS.PATH.AUTH, authRouter);
 app.use(SETTINGS.PATH.COMMENTS, commentRouter);
+app.use(SETTINGS.PATH.SECURITY, sessionRouter);
 
 app.delete("/testing/all-data", deleteAllDataController)
 
