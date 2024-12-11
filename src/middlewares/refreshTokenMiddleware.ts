@@ -23,13 +23,14 @@ export const refreshTokenMiddleware = async (req: Request,
     if (await sessionRepository.tokenListed(payload)) {
 
         req.body = payload;
-
-
-        next()
+        next();
+        return;
 
     }
 
-    res.status(HttpStatuses.Unauthorized).send({errorsMessages: [{field: 'token', message: 'Token is blocked'}]});
+    res
+        .status(HttpStatuses.Unauthorized)
+        .send({errorsMessages: [{field: 'token', message: 'Token is blocked'}]});
     return;
 
 

@@ -72,6 +72,7 @@ export type DeviceAuthSessionDBModel = {
     lastActiveDate: string;
     deviceId: string;
     userId: string;
+    expDate: string;
 };
 
 export type RequestLogDBModel = {

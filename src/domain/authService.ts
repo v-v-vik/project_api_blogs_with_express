@@ -19,7 +19,6 @@ export const authService = {
         const { loginOrEmail, password } = data;
         const user = await this.checkCredentials(loginOrEmail, password);
 
-
         if (!user) return {
             status: ResultStatus.Unauthorized,
             data: null
@@ -36,6 +35,7 @@ export const authService = {
         const refreshToken = jwtService.createRefreshToken(user._id.toString(),dId);
 
         const payload = jwtService.verifyRefreshToken(refreshToken) as Payload;
+
         const result = await sessionRepository.addSession(payload, ip, deviceName, dId);
         if (result) {
             return {

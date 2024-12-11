@@ -21,7 +21,8 @@ export const sessionRepository = {
             title: userAgent,
             lastActiveDate: tokenContent.iat.toString(),
             deviceId,
-            userId: tokenContent.userId
+            userId: tokenContent.userId,
+            expDate: tokenContent.exp.toString()
         });
         return !!result.insertedId;
 

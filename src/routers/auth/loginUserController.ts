@@ -10,8 +10,10 @@ export const loginUserController = async (req: Request<any, any, LoginInputModel
 
 
     const data: LoginInputModel = matchedData(req);
-    if (req.ip && req.headers['user-agent']) {
-        const result = await authService.loginUser(data, req.ip, req.headers['user-agent']);
+    const userAgent = req.headers['user-agent'] || 'unknown device'
+
+    if (req.ip) {
+        const result = await authService.loginUser(data, req.ip, userAgent);
         if (result === null) {
             res.status(HttpStatuses.BadRequest)
             return;
@@ -28,17 +30,11 @@ export const loginUserController = async (req: Request<any, any, LoginInputModel
                 })
                 .status(HttpStatuses.Success)
                 .json({accessToken: result.data[0]})
-
-
         }
     }
 
+
+
     res.status(HttpStatuses.ServerError).send();
-
-
-
-
-
-
 
 }
