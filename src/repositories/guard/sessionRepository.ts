@@ -31,9 +31,20 @@ export const sessionRepository = {
         return await sessionCollection.deleteMany({})
     },
 
-    async terminateAllSessions() {
+    async terminateAllSessions(payload: Payload, currentIp: string | undefined) {
+        const result = await sessionCollection.deleteMany({
+            $nor: [
+                {ip: currentIp, deviceId: payload.deviceId, iat: payload.iat}
+            ]
+        })
+        return !!result
 
 
+    },
+
+    async terminateSessionById(deviceId: string) {
+        const result = await sessionCollection.deleteOne({deviceId});
+        return !!result
     },
 
     async updateSession(tokenContent: Payload, deviceId: string, userId: string, newIat: number) {
@@ -44,5 +55,13 @@ export const sessionRepository = {
             }
         );
         return res.matchedCount === 1;
+    },
+
+    async findSessionById(deviceId: string) {
+        const res = await sessionCollection.findOne({deviceId});
+        if (!res) {
+            return null;
+        }
+        return res;
     }
 }

@@ -1,5 +1,5 @@
 
-export type Result<T = null> = {
+export type ResultModel<T = null> = {
     status: ResultStatus;
     data: T;
 };
