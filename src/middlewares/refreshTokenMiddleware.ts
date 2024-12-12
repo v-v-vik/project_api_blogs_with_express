@@ -1,7 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../adapters/jwtService";
 import {HttpStatuses} from "../result-object/result code";
-import {tokenRepository} from "../repositories/guard/tokenRepository";
+import {sessionRepository} from "../repositories/guard/sessionRepository";
+import {Payload} from "../input-output-types/token";
 
 export const refreshTokenMiddleware = async (req: Request,
                                             res: Response,
@@ -12,22 +13,27 @@ export const refreshTokenMiddleware = async (req: Request,
         return;
     }
 
-    const payload = jwtService.verifyRefreshToken(refreshToken);
+    const payload = jwtService.verifyRefreshToken(refreshToken) as Payload;
     if (!payload) {
         res.sendStatus(HttpStatuses.Unauthorized);
         return;
     }
 
 
-    if (await tokenRepository.isTokenBlacklisted(refreshToken)) {
-        res.status(HttpStatuses.Unauthorized).send({errorsMessages: [{field: 'token', message: 'Token is blocked'}]});
+    if (await sessionRepository.tokenListed(payload)) {
+
+        req.body = payload;
+        next();
         return;
+
     }
 
-    req.body = payload;
+    res
+        .status(HttpStatuses.Unauthorized)
+        .send({errorsMessages: [{field: 'token', message: 'Token is blocked'}]});
+    return;
 
 
-    next()
 
 
 }

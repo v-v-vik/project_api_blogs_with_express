@@ -9,16 +9,15 @@ import {emailTemplates} from "../adapters/emailTemplates";
 import {ResultStatus} from "../result-object/result code";
 import {userService} from "./userService";
 import {ObjectId} from "mongodb";
-import {tokenRepository} from "../repositories/guard/tokenRepository";
+import {sessionRepository} from "../repositories/guard/sessionRepository";
 import {Payload} from "../input-output-types/token";
 
 
 
 export const authService = {
-    async loginUser(data: LoginInputModel) {
+    async loginUser(data: LoginInputModel, ip: string, deviceName: string) {
         const { loginOrEmail, password } = data;
         const user = await this.checkCredentials(loginOrEmail, password);
-
 
         if (!user) return {
             status: ResultStatus.Unauthorized,
@@ -31,14 +30,24 @@ export const authService = {
             }
         }
 
+        const dId = randomUUID();
         const accessToken = jwtService.createAccessToken(user._id.toString());
-        const refreshToken = jwtService.createRefreshToken(user._id.toString());
+        const refreshToken = jwtService.createRefreshToken(user._id.toString(),dId);
 
+        const payload = jwtService.verifyRefreshToken(refreshToken) as Payload;
 
-        return {
-            status: ResultStatus.Success,
-            data: [accessToken, refreshToken]
+        const result = await sessionRepository.addSession(payload, ip, deviceName, dId);
+        if (result) {
+            return {
+                status: ResultStatus.Success,
+                data: [accessToken, refreshToken]
+            }
         }
+        return {
+            status: ResultStatus.BadRequest,
+            data: null
+        }
+
 
 
 
@@ -169,11 +178,12 @@ export const authService = {
         }
     },
 
-    async refreshToken(oldToken: string, userData: Payload) {
-        await tokenRepository.addToken(oldToken, new Date(userData.exp * 1000));
-        const userId = userData.id;
+    async refreshToken(userData: Payload) {
+        const userId = userData.userId;
         const newAccessToken = jwtService.createAccessToken(userId);
-        const newRefreshToken = jwtService.createRefreshToken(userId);
+        const newRefreshToken = jwtService.createRefreshToken(userId, userData.deviceId);
+        const newTokenDate = jwtService.verifyRefreshToken(newRefreshToken) as { iat: number };
+        await sessionRepository.updateSession(userData, newTokenDate.iat)
 
         return {
             status: ResultStatus.Success,
@@ -182,12 +192,19 @@ export const authService = {
 
     },
 
-    async logout(token: string, userData: Payload) {
-        await tokenRepository.addToken(token, new Date(userData.exp * 1000));
-
+    async logoutUser(deviceId: string) {
+        const res = await sessionRepository.terminateSessionById(deviceId);
+        if (!res) {
+            return {
+                status: ResultStatus.BadRequest,
+                data: null
+            }
+        }
         return {
             status: ResultStatus.NoContent,
-            data: null
+            data:null
         }
     }
+
+
 }

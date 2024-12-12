@@ -10,29 +10,31 @@ export const loginUserController = async (req: Request<any, any, LoginInputModel
 
 
     const data: LoginInputModel = matchedData(req);
-    const result = await authService.loginUser(data);
-    if (result === null) {
-        res.status(HttpStatuses.BadRequest)
-        return;
+    const userAgent = req.headers['user-agent'] || 'unknown device'
+
+    if (req.ip) {
+        const result = await authService.loginUser(data, req.ip, userAgent);
+        if (result === null) {
+            res.status(HttpStatuses.BadRequest)
+            return;
+        }
+        if (result?.status === ResultStatus.Unauthorized) {
+            res.sendStatus(HttpStatuses.Unauthorized)
+            return;
+        }
+        if (result?.data) {
+            res
+                .cookie("refreshToken", result.data[1], {
+                    httpOnly: true,
+                    secure: true,
+                })
+                .status(HttpStatuses.Success)
+                .json({accessToken: result.data[0]})
+        }
     }
 
-    if (result.status === ResultStatus.Unauthorized) {
-        res.sendStatus(HttpStatuses.Unauthorized)
-        return;
-    }
-
-    if (result.data) {
-         res
-             .cookie("refreshToken", result.data[1], {
-             httpOnly: true,
-             secure: true,
-             })
-            .status(HttpStatuses.Success)
-            .json({ accessToken: result.data[0] })
 
 
-    }
-
-
+    res.status(HttpStatuses.ServerError).send();
 
 }

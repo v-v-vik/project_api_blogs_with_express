@@ -1,16 +1,13 @@
 import {Request, Response} from "express";
+import {HttpStatuses, ResultModel, ResultStatus} from "../../result-object/result code";
 import {authService} from "../../domain/authService";
-import {HttpStatuses, ResultStatus} from "../../result-object/result code";
 
 export const logoutController = async (req: Request,
                                              res: Response)=> {
 
-
-    const refreshToken = req.cookies.refreshToken;
-    const result = await authService.logout(refreshToken, req.body);
-
-    if (result.status !== ResultStatus.NoContent) {
-        res.status(HttpStatuses.Unauthorized).send();
+    const result: ResultModel = await authService.logoutUser(req.body.deviceId);
+    if (result.status === ResultStatus.BadRequest) {
+        res.status(HttpStatuses.BadRequest).send({"Error": "Failed to logout"})
         return;
     }
 

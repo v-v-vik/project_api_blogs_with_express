@@ -12,4 +12,5 @@ const startApp = async () => {
 }
 
 startApp();
+app.set('trust proxy', true);
 

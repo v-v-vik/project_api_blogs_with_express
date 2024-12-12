@@ -7,8 +7,8 @@ export const refreshTokenController = async (req: Request,
                                                          res: Response)=> {
 
 
-    const refreshToken = req.cookies.refreshToken;
-    const result = await authService.refreshToken(refreshToken, req.body);
+
+    const result = await authService.refreshToken(req.body);
 
     if (result.status !== ResultStatus.Success) {
         res.status(HttpStatuses.Unauthorized).send();
@@ -22,5 +22,7 @@ export const refreshTokenController = async (req: Request,
         })
         .status(HttpStatuses.Success)
         .json({ accessToken: result.data[0]});
+
+
 
 }

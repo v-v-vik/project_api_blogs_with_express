@@ -3,11 +3,11 @@ import {SETTINGS} from "../settings";
 
 export const jwtService = {
     createAccessToken(id: string) {
-        return jwt.sign({id}, SETTINGS.ACCESS_TOKEN_SECRET, {expiresIn: '10s'});
+        return jwt.sign({userId: id}, SETTINGS.ACCESS_TOKEN_SECRET, {expiresIn: '10s'});
     },
 
-    createRefreshToken(id: string) {
-        return jwt.sign({id}, SETTINGS.REFRESH_TOKEN_SECRET, {expiresIn: '20s'})
+    createRefreshToken(id: string, deviceId: string) {
+        return jwt.sign({userId: id,deviceId}, SETTINGS.REFRESH_TOKEN_SECRET, {expiresIn: '20s'})
     },
 
     getUserIdByAccessToken(token: string) {
@@ -28,12 +28,12 @@ export const jwtService = {
         }
     },
 
-    decodeToken(token: string) {
-        try {
-            return jwt.decode(token);
-        } catch (error) {
-            console.error("Error while token decoding");
-            return null;
-        }
-    }
+    // decodeToken(token: string) {
+    //     try {
+    //         return jwt.decode(token);
+    //     } catch (error) {
+    //         console.error("Error while token decoding");
+    //         return null;
+    //     }
+    // }
 }
