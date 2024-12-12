@@ -7,7 +7,7 @@ export const requestLogger = async (request: Request,
                                     next: NextFunction) => {
 
     const date: Date = new Date();
-    const url = request.baseUrl;
+    const url = request.originalUrl;
     const ip = request.ip || request.socket.remoteAddress;
 
     if (ip) {
@@ -30,7 +30,7 @@ export const rateLimitManager = async (request: Request,
     const timeWindow = new Date(Date.now() - 10 * 1000);
 
     try {
-        const requestCount = await requestRepository.countRequests(request.ip, request.baseUrl, timeWindow);
+        const requestCount = await requestRepository.countRequests(request.ip, request.originalUrl, timeWindow);
         if (requestCount > 5) {
             response.status(HttpStatuses.TooManyRequests).send({errorMessage: "Too many requests"});
             return;

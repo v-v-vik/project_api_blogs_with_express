@@ -6,8 +6,8 @@ import {securityService} from "../../domain/securityService";
 export const terminateAllSessionsController = async (req: Request,
                                                    res: Response)=> {
 
-    const ip = req.ip;
-    const result = await securityService.terminateAllSessions(req.body, ip);
+
+    const result = await securityService.terminateAllSessions(req.body);
 
 
     if (result.status !== ResultStatus.NoContent) {

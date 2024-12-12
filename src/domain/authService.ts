@@ -180,17 +180,30 @@ export const authService = {
 
     async refreshToken(userData: Payload) {
         const userId = userData.userId;
-        const dId = randomUUID();
         const newAccessToken = jwtService.createAccessToken(userId);
-        const newRefreshToken = jwtService.createRefreshToken(userId, dId);
+        const newRefreshToken = jwtService.createRefreshToken(userId, userData.deviceId);
         const newTokenDate = jwtService.verifyRefreshToken(newRefreshToken) as { iat: number };
-        await sessionRepository.updateSession(userData, dId, userId, newTokenDate.iat)
+        await sessionRepository.updateSession(userData, newTokenDate.iat)
 
         return {
             status: ResultStatus.Success,
             data: [newAccessToken, newRefreshToken]
         }
 
+    },
+
+    async logoutUser(deviceId: string) {
+        const res = await sessionRepository.terminateSessionById(deviceId);
+        if (!res) {
+            return {
+                status: ResultStatus.BadRequest,
+                data: null
+            }
+        }
+        return {
+            status: ResultStatus.NoContent,
+            data:null
+        }
     }
 
 

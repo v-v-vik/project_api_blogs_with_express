@@ -32,8 +32,8 @@ export const securityService = {
 
     },
 
-    async terminateAllSessions(payload: Payload, ip: string | undefined) {
-       const res: boolean = await sessionRepository.terminateAllSessions(payload, ip);
+    async terminateAllSessions(payload: Payload) {
+       const res: boolean = await sessionRepository.terminateAllSessions(payload);
        if (!res) {
            return {
                status: ResultStatus.BadRequest,

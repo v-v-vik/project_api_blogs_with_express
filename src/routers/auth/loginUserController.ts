@@ -26,7 +26,7 @@ export const loginUserController = async (req: Request<any, any, LoginInputModel
             res
                 .cookie("refreshToken", result.data[1], {
                     httpOnly: true,
-                    secure: false,
+                    secure: true,
                 })
                 .status(HttpStatuses.Success)
                 .json({accessToken: result.data[0]})

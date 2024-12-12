@@ -32,10 +32,11 @@ export const sessionRepository = {
         return await sessionCollection.deleteMany({})
     },
 
-    async terminateAllSessions(payload: Payload, currentIp: string | undefined) {
+    async terminateAllSessions(payload: Payload) {
         const result = await sessionCollection.deleteMany({
-            $nor: [
-                {ip: currentIp, deviceId: payload.deviceId, iat: payload.iat}
+            $and: [
+                {deviceId: { $ne: payload.deviceId}},
+                {iat: { $ne: payload.iat}}
             ]
         })
         return !!result
@@ -48,11 +49,11 @@ export const sessionRepository = {
         return !!result
     },
 
-    async updateSession(tokenContent: Payload, deviceId: string, userId: string, newIat: number) {
+    async updateSession(tokenContent: Payload, newIat: number) {
         const res = await sessionCollection.updateOne(
-            {lastActiveDate:tokenContent.iat.toString(), deviceId: tokenContent.deviceId, userId},
+            {lastActiveDate:tokenContent.iat.toString(), deviceId: tokenContent.deviceId, userId:tokenContent.userId},
             {
-                $set: {lastActiveDate: newIat.toString(), deviceId}
+                $set: {lastActiveDate: newIat.toString()}
             }
         );
         return res.matchedCount === 1;
