@@ -1,8 +1,8 @@
 import {Request, Response} from 'express';
 import {RegistrationEmailResendingModel} from "../../input-output-types/user auth types";
 import {matchedData} from "express-validator";
-import {authService} from "../../domain/authService";
-import {HttpStatuses, resultCode, ResultStatus} from "../../result-object/result code";
+import {authService} from "../../application/authService";
+import {HttpStatuses, resultCode, ResultStatus} from "../../domain/result-object/result code";
 
 
 export const regEmailResendingController = async (req: Request<any, any, RegistrationEmailResendingModel>,

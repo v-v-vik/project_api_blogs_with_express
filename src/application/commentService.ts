@@ -2,7 +2,7 @@ import {CommentDBType, CommentInputModel} from "../input-output-types/comment ty
 import {ObjectId} from "mongodb";
 import {userService} from "./userService";
 import {commentRepository} from "../repositories/comments/commentDbRepository";
-import {ResultStatus} from "../result-object/result code";
+import {ResultStatus} from "../domain/result-object/result code";
 
 
 export const commentService = {

@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../adapters/jwtService";
-import {userService} from "../domain/userService";
+import {userService} from "../application/userService";
 
 export const accessTokenMiddleware = async (req: Request,
                                       res: Response,

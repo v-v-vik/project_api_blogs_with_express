@@ -2,9 +2,9 @@ import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
 import {matchedData} from "express-validator";
 import {CommentInputModel} from "../../input-output-types/comment types";
-import {commentService} from "../../domain/commentService";
-import {ResultStatus} from "../../result-object/result code";
-import {HttpStatuses, resultCode} from "../../result-object/result code";
+import {commentService} from "../../application/commentService";
+import {ResultStatus} from "../../domain/result-object/result code";
+import {HttpStatuses, resultCode} from "../../domain/result-object/result code";
 
 export const updateCommentController = async (req: Request<ParamType, any, CommentInputModel>,
                                            res: Response) => {

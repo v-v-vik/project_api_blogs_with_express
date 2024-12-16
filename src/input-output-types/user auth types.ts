@@ -81,3 +81,12 @@ export type RequestLogDBModel = {
     date: Date;
 
 }
+
+export type PasswordRecoveryModel = {
+    email: string;
+}
+
+export type NewPwRecoveryInputModel = {
+    newPassword: string;
+    recoveryCode: string
+}

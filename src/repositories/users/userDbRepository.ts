@@ -1,7 +1,7 @@
 import {UserDBType} from "../../input-output-types/user auth types";
 import {userCollection} from "../db";
 import {ObjectId} from "mongodb";
-import {ResultStatus} from "../../result-object/result code";
+import {ResultStatus} from "../../domain/result-object/result code";
 
 
 export const userRepository = {
@@ -23,7 +23,7 @@ export const userRepository = {
         return user
     },
 
-    async checkUserByEmailOrLogin(loginOrEmail: string) {
+    async checkUserByEmailOrLogin(loginOrEmail: string): Promise<UserDBType | null> {
         const user = await userCollection.findOne({
             $or: [
                 {"accountData.login": loginOrEmail},
@@ -84,5 +84,15 @@ export const userRepository = {
 
 
 
+    },
+
+    async updatePassword(id: string, newPassword: string): Promise<boolean> {
+        const result = await userCollection.updateOne(
+            {_id:new ObjectId(id)},
+            {
+                $set: {"accountData.password": newPassword}
+            }
+        );
+        return result.matchedCount === 1;
     }
 }

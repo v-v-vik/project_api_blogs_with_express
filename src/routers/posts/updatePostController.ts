@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
 import {PostInputModel} from "../../input-output-types/post types";
-import {postService} from "../../domain/postService";
+import {postService} from "../../application/postService";
 import {matchedData} from "express-validator";
 
 

@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
-import {postService} from "../../domain/postService";
+import {postService} from "../../application/postService";
 
 export const deletePostController = async (req: Request<ParamType>,
                                      res: Response)=> {

@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import {postRepository} from "../../repositories/posts/postDbRepository";
 import {matchedData} from "express-validator";
-import {commentService} from "../../domain/commentService";
+import {commentService} from "../../application/commentService";
 import {CommentDBType, CommentInputModel} from "../../input-output-types/comment types";
 import {commentQueryRepository} from "../../repositories/comments/commentQueryRepository";
 import {ParamType} from "../../input-output-types/some";

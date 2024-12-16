@@ -2,7 +2,7 @@ import {ParamType} from "../../input-output-types/some";
 import {PostInputModel2} from "../../input-output-types/post types";
 import {Request, Response} from "express";
 import {matchedData} from "express-validator";
-import {postService} from "../../domain/postService";
+import {postService} from "../../application/postService";
 import {postQueryRepository} from "../../repositories/posts/postQueryRepository";
 
 

@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import {matchedData} from "express-validator";
-import {authService} from "../../domain/authService";
-import {HttpStatuses, resultCode, ResultStatus} from "../../result-object/result code";
+import {authService} from "../../application/authService";
+import {HttpStatuses, resultCode, ResultStatus} from "../../domain/result-object/result code";
 import {RegistrationConfirmationCodeModel} from "../../input-output-types/some";
 
 

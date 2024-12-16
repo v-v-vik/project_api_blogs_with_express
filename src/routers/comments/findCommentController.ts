@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {commentService} from "../../domain/commentService";
+import {commentService} from "../../application/commentService";
 import {commentQueryRepository} from "../../repositories/comments/commentQueryRepository";
 
 

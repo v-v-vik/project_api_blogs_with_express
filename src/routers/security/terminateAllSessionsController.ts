@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
-import {HttpStatuses, ResultStatus} from "../../result-object/result code";
-import {securityService} from "../../domain/securityService";
+import {HttpStatuses, ResultStatus} from "../../domain/result-object/result code";
+import {securityService} from "../../application/securityService";
 
 
 export const terminateAllSessionsController = async (req: Request,

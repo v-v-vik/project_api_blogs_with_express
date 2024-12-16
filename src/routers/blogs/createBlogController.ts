@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import {BlogDBType, BlogInputModel} from "../../input-output-types/blog types";
 import {OutputErrorsType} from "../../input-output-types/error output types";
-import {blogService} from "../../domain/blogService";
+import {blogService} from "../../application/blogService";
 import {matchedData} from "express-validator";
 import {blogQueryRepository} from "../../repositories/blogs/blogQueryRepository";
 

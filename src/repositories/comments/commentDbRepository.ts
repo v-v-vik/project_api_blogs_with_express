@@ -1,7 +1,7 @@
 import {CommentDBType, CommentInputModel} from "../../input-output-types/comment types";
 import {commentCollection} from "../db";
 import {ObjectId} from "mongodb";
-import {ResultStatus} from "../../result-object/result code";
+import {ResultStatus} from "../../domain/result-object/result code";
 
 
 export const commentRepository = {

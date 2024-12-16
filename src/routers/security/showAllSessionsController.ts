@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {sessionQueryRepository} from "../../repositories/guard/sessionQueryRepository";
-import {HttpStatuses} from "../../result-object/result code";
+import {HttpStatuses} from "../../domain/result-object/result code";
 import {DeviceViewModel} from "../../input-output-types/user auth types";
 
 

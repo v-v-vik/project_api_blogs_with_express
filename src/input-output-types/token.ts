@@ -4,3 +4,9 @@ export type Payload = {
     iat: number,
     exp: number
 }
+
+export type CodePayload = {
+    email: string,
+    iat: number,
+    exp: number
+}

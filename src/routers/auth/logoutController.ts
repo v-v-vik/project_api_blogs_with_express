@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
-import {HttpStatuses, ResultModel, ResultStatus} from "../../result-object/result code";
-import {authService} from "../../domain/authService";
+import {HttpStatuses, ResultModel, ResultStatus} from "../../domain/result-object/result code";
+import {authService} from "../../application/authService";
 
 export const logoutController = async (req: Request,
                                              res: Response)=> {
