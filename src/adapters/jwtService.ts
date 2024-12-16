@@ -29,8 +29,8 @@ export const jwtService = {
         }
     },
 
-    createRecoveryCode(email: string) {
-        return jwt.sign(email, 'RecoveryPasswordSecret', {expiresIn: '10m'});
+    createRecoveryCode(userEmail: string) {
+        return jwt.sign({email:userEmail}, 'RecoveryPasswordSecret', {expiresIn: '5m'});
     },
 
     verifyRecoveryCode(code: string) {

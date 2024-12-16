@@ -232,7 +232,7 @@ export const authService = {
         if (!codePayload) {
             return {
                 status: ResultStatus.BadRequest,
-                data: {errorsMessages: [{field: 'code', message: 'code expired'}] }
+                data: {errorsMessages: [{field: 'recoveryCode', message: 'code expired or incorrect'}] }
             }
         }
         const user: UserDBType | null = await userRepository.checkUserByEmailOrLogin(codePayload.email);

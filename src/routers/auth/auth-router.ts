@@ -2,7 +2,7 @@ import {Router} from "express";
 import {
     emailValidator,
     loginOrEmailValidator,
-    loginValidator,
+    loginValidator, newPasswordValidator,
     passwordValidator
 } from "../../middlewares/userValidators";
 import {loginUserController} from "./loginUserController";
@@ -77,7 +77,7 @@ authRouter.post(
 authRouter.post(
     "/new-password",
     rateLimitMiddleware,
-    passwordValidator,
+    newPasswordValidator,
     recoveryCodeValidator,
     checkInputErrorsMiddleware,
     newPasswordController )

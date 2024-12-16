@@ -11,6 +11,10 @@ export const passwordValidator = body('password')
     .isString().withMessage('not string')
     .trim().isLength({min:6, max:20}).withMessage('from 6 to 20 characters')
 
+export const newPasswordValidator = body('newPassword')
+    .isString().withMessage('not string')
+    .trim().isLength({min:6, max:20}).withMessage('from 6 to 20 characters')
+
 export const emailValidator = body('email')
     .isString().withMessage('not string')
     .trim().isEmail().withMessage('not email')
