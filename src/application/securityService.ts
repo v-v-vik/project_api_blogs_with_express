@@ -1,6 +1,6 @@
-import {Payload} from "../input-output-types/token";
 import {sessionRepository} from "../repositories/guard/sessionRepository";
 import {ResultModel, ResultStatus} from "../domain/result-object/result code";
+import {Payload} from "../input-output-types/auth types";
 
 
 export const securityService = {

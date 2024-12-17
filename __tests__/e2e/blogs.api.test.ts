@@ -1,8 +1,9 @@
 import {SETTINGS} from "../../src/settings";
 import {app} from "../../src/app";
 import {agent} from "supertest";
-import {blogCollection, postCollection} from "../../src/repositories/db";
 import {ObjectId} from "mongodb";
+import {BlogModel} from "../../src/domain/blog entity";
+import {PostModel} from "../../src/domain/post entity";
 
 const req = agent(app);
 
@@ -18,8 +19,9 @@ describe(SETTINGS.PATH.BLOGS, () => {
 
 
     beforeAll(async () => {
-        await blogCollection.deleteMany({});
-        await postCollection.deleteMany({})
+        await BlogModel.deleteMany({});
+        await PostModel.deleteMany({});
+        console.log("All Collections cleared")
     })
 
     it("should get empty array", async () => {
@@ -41,9 +43,9 @@ describe(SETTINGS.PATH.BLOGS, () => {
 
 
 
-    let newBlog: any = null;
-    let newBlog2: any = null;
-    let newBlog3: any = null;
+    let newBlog: any;
+    let newBlog2: any;
+    let newBlog3: any;
     it("should not get an empty array", async () => {
         const newId = new ObjectId();
         const newId2 = new ObjectId();
@@ -64,7 +66,7 @@ describe(SETTINGS.PATH.BLOGS, () => {
             isMembership: false
         }
 
-        await blogCollection.insertMany([newBlog2, newBlog3]);
+        await BlogModel.insertMany([newBlog2, newBlog3]);
 
         await req
             .get(SETTINGS.PATH.BLOGS)
@@ -72,7 +74,7 @@ describe(SETTINGS.PATH.BLOGS, () => {
                 pagesCount: 1,
                 page: 1,
                 pageSize: 10,
-                totalCount: await blogCollection.countDocuments(),
+                totalCount: await BlogModel.countDocuments(),
                 items: [
                     {
                         id: newBlog2._id.toString(),
@@ -270,7 +272,7 @@ describe(SETTINGS.PATH.BLOGS, () => {
             blogName: newBlog2.name
         }
 
-        await postCollection.insertOne(Post1);
+        await PostModel.create(Post1);
 
         await req
             .get(`${SETTINGS.PATH.BLOGS}/${(newBlog2._id).toString()}/posts`)

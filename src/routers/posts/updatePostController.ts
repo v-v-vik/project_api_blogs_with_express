@@ -1,8 +1,8 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
-import {PostInputModel} from "../../input-output-types/post types";
 import {postService} from "../../application/postService";
 import {matchedData} from "express-validator";
+import {PostInputModel} from "../../domain/post entity";
 
 
 export const updatePostController = async (req: Request<ParamType, any, PostInputModel>,

@@ -1,11 +1,10 @@
-import {postCollection} from "../db";
-import {ObjectId, Sort} from "mongodb";
 import {QueryType} from "../../input-output-types/some";
-import {PostDBType} from "../../input-output-types/post types";
+import {PostDBType, PostModel} from "../../domain/post entity";
+import {sortQueryFields} from "../../utils/sortQueryFields.utils";
 
 
 const postOutputMapper = (post:any) => ({
-    id: post._id.toString(),
+    id: post._id,
     title: post.title,
     shortDescription: post.shortDescription,
     content: post.content,
@@ -17,7 +16,7 @@ const postOutputMapper = (post:any) => ({
 
 export const postQueryRepository = {
     async getPostById(id: string){
-        const result = await postCollection.findOne({_id:new ObjectId(id)});
+        const result = await PostModel.findOne({_id:id});
         if (result) {
             return postOutputMapper(result);
         }
@@ -31,39 +30,32 @@ export const postQueryRepository = {
 
         if (blogId) {
             filter.blogId = blogId;
-            console.log("BlogId is:", blogId)
-        }
 
-        console.log("filter is:", filter)
+        }
 
         const searchNameTerm = query.searchNameTerm ?? null;
         if (searchNameTerm) {
          filter.title = {$regex: query.searchNameTerm, $options: 'i'};
         }
 
-        const pageNumber = query.pageNumber ? +query.pageNumber : 1;
-        const pageSize = query.pageSize !== undefined ? +query.pageSize : 10;
-        const skip = (pageNumber - 1) * pageSize;
+        const sortResult = sortQueryFields(query);
 
-        const sort: Sort = {
-            [query.sortBy || 'createdAt']: query.sortDirection === 'asc' ? 1 : -1,
-        };
 
         try {
-            const items = await postCollection
+            const items = await PostModel
                 .find(filter)
-                .sort(sort)
-                .skip(skip)
-                .limit(pageSize)
-                .toArray() as PostDBType[]
+                .sort(sortResult.sort)
+                .skip(sortResult.skip)
+                .limit(sortResult.pageSize)
+                .lean() as PostDBType[]
 
-            const totalCount = await postCollection.countDocuments(filter);
+            const totalCount = await PostModel.countDocuments(filter);
             const mappedPosts = items.map((post) => postOutputMapper(post));
 
             return {
-                pagesCount: Math.ceil(totalCount / pageSize),
-                page: pageNumber,
-                pageSize: pageSize,
+                pagesCount: Math.ceil(totalCount / sortResult.pageSize),
+                page: sortResult.pageNumber,
+                pageSize: sortResult.pageSize,
                 totalCount: totalCount,
                 items: mappedPosts
             }
@@ -89,38 +81,27 @@ export const postQueryRepository = {
         const filter: any = {}
 
         if (id) {
-            filter._id = new ObjectId(id);
+            filter._id = id;
         }
 
+        const sortResult = sortQueryFields(query);
 
-        // const searchNameTerm = query.searchNameTerm ?? null;
-        // if (searchNameTerm) {
-        //  filter.title = {$regex: query.searchNameTerm, $options: 'i'};
-        // }
-
-        const pageNumber = query.pageNumber ? +query.pageNumber : 1;
-        const pageSize = query.pageSize !== undefined ? +query.pageSize : 10;
-        const skip = (pageNumber - 1) * pageSize;
-
-        const sort: Sort = {
-            [query.sortBy || 'createdAt']: query.sortDirection === 'asc' ? 1 : -1,
-        };
 
         try {
-            const items = await postCollection
+            const items = await PostModel
                 .find(filter)
-                .sort(sort)
-                .skip(skip)
-                .limit(pageSize)
-                .toArray() as PostDBType[]
+                .sort(sortResult.sort)
+                .skip(sortResult.skip)
+                .limit(sortResult.pageSize)
+                .lean() as PostDBType[]
 
-            const totalCount = await postCollection.countDocuments(filter);
+            const totalCount = await PostModel.countDocuments(filter);
             const mappedPosts = items.map((post) => postOutputMapper(post));
 
             return {
-                pagesCount: Math.ceil(totalCount / pageSize),
-                page: pageNumber,
-                pageSize: pageSize,
+                pagesCount: Math.ceil(totalCount / sortResult.pageSize),
+                page: sortResult.pageNumber,
+                pageSize: sortResult.pageSize,
                 totalCount: totalCount,
                 items: mappedPosts
             }

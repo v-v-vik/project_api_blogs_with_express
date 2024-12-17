@@ -1,11 +1,10 @@
-import {CommentDBType, CommentViewModel} from "../../input-output-types/comment types";
-import {commentCollection} from "../db";
-import {ObjectId} from "mongodb";
+
 import {QueryType} from "../../input-output-types/some";
 import {sortQueryFields} from "../../utils/sortQueryFields.utils";
+import {CommentDBType, CommentModel} from "../../domain/comment entity";
 
 const commentOutputMapper = (comment: CommentDBType) =>  ({
-    id: comment._id.toString(),
+    id: comment._id,
     content: comment.content,
     commentatorInfo: {
         userId: comment.commentatorInfo.userId,
@@ -15,8 +14,8 @@ const commentOutputMapper = (comment: CommentDBType) =>  ({
 })
 
 export const commentQueryRepository = {
-    async getCommentById(id: string): Promise<CommentViewModel | null> {
-        const comment = await commentCollection.findOne({_id: new ObjectId(id)});
+    async getCommentById(id: string) {
+        const comment = await CommentModel.findOne({_id: id});
         if (!comment) return null;
         return commentOutputMapper(comment);
     },
@@ -30,16 +29,16 @@ export const commentQueryRepository = {
 
 
         try {
-            const items = await commentCollection
+            const items = await CommentModel
                 .find({postId:id})
                 .sort(sortResult.sort)
                 .skip(sortResult.skip)
                 .limit(sortResult.pageSize)
-                .toArray() as CommentDBType[]
+                .lean() as CommentDBType[]
 
 
 
-            const totalCount = await commentCollection.countDocuments({postId:id});
+            const totalCount = await CommentModel.countDocuments({postId:id});
 
             const mappedComments = items.map((comment) => commentOutputMapper(comment));
 

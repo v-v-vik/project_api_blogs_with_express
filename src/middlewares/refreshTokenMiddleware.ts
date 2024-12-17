@@ -2,7 +2,8 @@ import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../adapters/jwtService";
 import {HttpStatuses} from "../domain/result-object/result code";
 import {sessionRepository} from "../repositories/guard/sessionRepository";
-import {Payload} from "../input-output-types/token";
+import {Payload} from "../input-output-types/auth types";
+
 
 export const refreshTokenMiddleware = async (req: Request,
                                             res: Response,

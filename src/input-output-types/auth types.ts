@@ -1,3 +1,14 @@
+
+
+export type PasswordRecoveryModel = {
+    email: string;
+}
+
+export type NewPwRecoveryInputModel = {
+    newPassword: string;
+    recoveryCode: string
+}
+
 export type Payload = {
     userId: string,
     deviceId: string,

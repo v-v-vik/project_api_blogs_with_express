@@ -1,8 +1,9 @@
-import {CommentDBType, CommentInputModel} from "../input-output-types/comment types";
+
 import {ObjectId} from "mongodb";
 import {userService} from "./userService";
 import {commentRepository} from "../repositories/comments/commentDbRepository";
 import {ResultStatus} from "../domain/result-object/result code";
+import {CommentDBType, CommentInputModel} from "../domain/comment entity";
 
 
 export const commentService = {

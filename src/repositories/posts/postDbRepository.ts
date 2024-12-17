@@ -1,18 +1,16 @@
-import {postCollection} from "../db";
-import {PostDBType, PostInputModel} from "../../input-output-types/post types";
-import {ObjectId} from "mongodb";
+import {PostDBType, PostDocument, PostInputModel, PostModel} from "../../domain/post entity";
 
 
 export const postRepository = {
     async createPost(newPost:PostDBType):Promise<string> {
-        const result = await postCollection.insertOne(newPost);
-        return result.insertedId.toString();
+        const result: PostDocument = await PostModel.create(newPost);
+        return result.id;
     },
 
 
     async updatePost(id: string, post: PostInputModel): Promise<boolean> {
-       const res = await postCollection.updateOne(
-                {_id:new ObjectId(id)},
+       const res = await PostModel.updateOne(
+                {_id:id},
                 {
                     $set: {...post}
                 }
@@ -20,19 +18,19 @@ export const postRepository = {
         return res.matchedCount === 1;
     },
 
-    async deletePost(id:string) {
-        await postCollection.deleteOne({_id:new ObjectId(id)});
+    async deletePost(id:string):Promise<boolean> {
+        await PostModel.deleteOne({_id:id});
             return true;
 
     },
 
     async deleteAllPosts(): Promise<boolean> {
-        await postCollection.deleteMany({});
+        await PostModel.deleteMany({});
         return true;
     },
 
     async findPostById(id: string)  {
-        const result = await postCollection.findOne({_id:new ObjectId(id)});
+        const result = await PostModel.findOne({_id:id});
         if (!result) {
             return null;
         }

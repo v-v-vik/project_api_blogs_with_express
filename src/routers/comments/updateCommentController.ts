@@ -1,10 +1,10 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
 import {matchedData} from "express-validator";
-import {CommentInputModel} from "../../input-output-types/comment types";
 import {commentService} from "../../application/commentService";
 import {ResultStatus} from "../../domain/result-object/result code";
 import {HttpStatuses, resultCode} from "../../domain/result-object/result code";
+import {CommentInputModel} from "../../domain/comment entity";
 
 export const updateCommentController = async (req: Request<ParamType, any, CommentInputModel>,
                                            res: Response) => {

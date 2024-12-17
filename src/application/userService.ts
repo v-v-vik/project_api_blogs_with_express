@@ -1,9 +1,9 @@
-import {AccountStatusCodes, UserDBType, UserInputModel} from "../input-output-types/user auth types";
 import {bcryptService} from "../adapters/bcrypt.service";
 import {userRepository} from "../repositories/users/userDbRepository";
 import {randomUUID} from "node:crypto";
 import add from "date-fns/add";
 import {ObjectId} from "mongodb";
+import {AccountStatusCodes, UserDBType, UserInputModel} from "../domain/user entity";
 
 
 export const userService = {

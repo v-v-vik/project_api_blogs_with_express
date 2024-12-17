@@ -4,3 +4,6 @@ module.exports = {
   testEnvironment: 'node',
   testRegex: ".test.ts$",
 };
+// module.exports = {
+//   testTimeout: 10000,
+// };

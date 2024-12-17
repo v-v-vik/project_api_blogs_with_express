@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import {Paginator, ParamType, QueryType} from "../../input-output-types/some";
-import {BlogViewModel} from "../../input-output-types/blog types";
 import {blogQueryRepository} from "../../repositories/blogs/blogQueryRepository";
+import {BlogViewModel} from "../../domain/blog entity";
 
 export const findBlogsController = async (req: Request<ParamType, any, any, QueryType>,
                                           res: Response<Paginator<BlogViewModel>| BlogViewModel> ) => {

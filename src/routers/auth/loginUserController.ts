@@ -1,8 +1,8 @@
 import {Request, Response} from 'express';
-import {LoginInputModel} from "../../input-output-types/user auth types";
 import {matchedData} from "express-validator";
 import {authService} from "../../application/authService";
 import {HttpStatuses, ResultStatus} from "../../domain/result-object/result code";
+import {LoginInputModel} from "../../domain/user entity";
 
 
 export const loginUserController = async (req: Request<any, any, LoginInputModel>,

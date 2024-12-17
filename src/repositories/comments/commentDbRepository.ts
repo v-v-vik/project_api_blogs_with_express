@@ -1,23 +1,22 @@
-import {CommentDBType, CommentInputModel} from "../../input-output-types/comment types";
-import {commentCollection} from "../db";
-import {ObjectId} from "mongodb";
+
 import {ResultStatus} from "../../domain/result-object/result code";
+import {CommentDBType, CommentInputModel, CommentModel} from "../../domain/comment entity";
 
 
 export const commentRepository = {
     async createComment(data: CommentDBType) {
-        const result = await commentCollection.insertOne(data);
+        const result = await CommentModel.create(data);
         if (!result) return null;
-        return result.insertedId.toString();
+        return result.id;
     },
 
     async deleteAllComments() {
-        await commentCollection.deleteMany({});
+        await CommentModel.deleteMany({});
         return true;
     },
 
     async findCommentById(id: string) {
-        const result = await commentCollection.findOne({_id:new ObjectId(id)});
+        const result = await CommentModel.findOne({_id:id});
         if (!result) {
             return null;
         }
@@ -25,13 +24,14 @@ export const commentRepository = {
     },
 
     async deleteComment(id: string) {
-        return await commentCollection.deleteOne({_id: new ObjectId(id)});
+        await CommentModel.deleteOne({_id: id});
+        return true;
 
     },
 
     async updateComment(data: CommentInputModel, id: string) {
-        const result = await commentCollection.updateOne(
-            {_id:new ObjectId(id)},
+        const result = await CommentModel.updateOne(
+            {_id:id},
             {
                 $set: {...data}
             }

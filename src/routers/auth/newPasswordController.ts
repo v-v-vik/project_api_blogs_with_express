@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {NewPwRecoveryInputModel} from "../../input-output-types/user auth types";
+import {NewPwRecoveryInputModel} from "../../input-output-types/auth types";
 import {matchedData} from "express-validator";
 import {authService} from "../../application/authService";
 import {HttpStatuses, resultCode, ResultStatus} from "../../domain/result-object/result code";

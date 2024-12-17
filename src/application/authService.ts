@@ -1,11 +1,5 @@
 import {userRepository} from "../repositories/users/userDbRepository";
-import {
-    AccountStatusCodes,
-    LoginInputModel, NewPwRecoveryInputModel,
-    PasswordRecoveryModel,
-    UserDBType,
-    UserInputModel
-} from "../input-output-types/user auth types";
+import {CodePayload, NewPwRecoveryInputModel, PasswordRecoveryModel, Payload} from "../input-output-types/auth types";
 import {bcryptService} from "../adapters/bcrypt.service";
 import {jwtService} from "../adapters/jwtService";
 import {randomUUID} from "node:crypto";
@@ -16,7 +10,8 @@ import {ResultStatus} from "../domain/result-object/result code";
 import {userService} from "./userService";
 import {ObjectId} from "mongodb";
 import {sessionRepository} from "../repositories/guard/sessionRepository";
-import {CodePayload, Payload} from "../input-output-types/token";
+import {AccountStatusCodes, LoginInputModel, UserDBType, UserInputModel} from "../domain/user entity";
+
 
 
 

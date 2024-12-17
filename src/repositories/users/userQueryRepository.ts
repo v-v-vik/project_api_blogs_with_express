@@ -1,12 +1,10 @@
 import {UsersQueryFieldsType} from "../../input-output-types/some";
-import {ObjectId} from "mongodb";
-import {userCollection} from "../db";
-import {UserDBType} from "../../input-output-types/user auth types";
 import {sortQueryFields} from "../../utils/sortQueryFields.utils";
+import {UserDBType, UserModel} from "../../domain/user entity";
 
 
 const userOutputMapper = (user:any) => ({
-    id: user._id.toString(),
+    id: user._id,
     login: user.accountData.login,
     email: user.accountData.email,
     createdAt: user.accountData.createdAt
@@ -15,14 +13,14 @@ const userOutputMapper = (user:any) => ({
 const userAuthOutputMapper = (user:any) => ({
     login: user.accountData.login,
     email: user.accountData.email,
-    userId: user._id.toString()
+    userId: user._id
 })
 
 
 export const userQueryRepository = {
 
     async getMeInfo(id: string){
-      const result = await userCollection.findOne({_id:new ObjectId(id)});
+      const result = await UserModel.findOne({_id:id});
       if (!result) {
           return null;
       }
@@ -30,7 +28,7 @@ export const userQueryRepository = {
     },
 
     async getUserById(id: string){
-        const result = await userCollection.findOne({_id:new ObjectId(id)});
+        const result = await UserModel.findOne({_id:id});
         if (!result) {
             return null;
         }
@@ -68,15 +66,15 @@ export const userQueryRepository = {
 
 
         try {
-            const items = await userCollection
+            const items = await UserModel
                 .find(filter)
                 .sort(sortResult.sort)
                 .skip(sortResult.skip)
                 .limit(sortResult.pageSize)
-                .toArray() as UserDBType[]
+                .lean() as UserDBType[]
 
 
-            const totalCount = await userCollection.countDocuments(filter);
+            const totalCount = await UserModel.countDocuments(filter);
             const mappedUsers = items.map((user) => userOutputMapper(user));
 
             return {

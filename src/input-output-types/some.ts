@@ -1,5 +1,6 @@
 import {OutputErrorsType} from "./error output types";
-import {BlogDBType} from "./blog types";
+import {BlogDBType} from "../domain/blog entity";
+
 
 export type ParamType = {
     id: string

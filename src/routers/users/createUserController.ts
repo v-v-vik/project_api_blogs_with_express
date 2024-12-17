@@ -1,8 +1,8 @@
-import {UserInputModel} from "../../input-output-types/user auth types";
 import {Request, Response} from "express";
 import {matchedData} from "express-validator";
 import {userService} from "../../application/userService";
 import {userQueryRepository} from "../../repositories/users/userQueryRepository";
+import {UserInputModel} from "../../domain/user entity";
 
 
 export const createUserController = async (req: Request<any, any, UserInputModel>,

@@ -2,9 +2,9 @@ import {Request, Response} from 'express';
 import {postRepository} from "../../repositories/posts/postDbRepository";
 import {matchedData} from "express-validator";
 import {commentService} from "../../application/commentService";
-import {CommentDBType, CommentInputModel} from "../../input-output-types/comment types";
 import {commentQueryRepository} from "../../repositories/comments/commentQueryRepository";
 import {ParamType} from "../../input-output-types/some";
+import {CommentDBType, CommentInputModel} from "../../domain/comment entity";
 
 export const createCommentController = async (req: Request<ParamType, any, CommentInputModel>,
                                               res: Response) => {
