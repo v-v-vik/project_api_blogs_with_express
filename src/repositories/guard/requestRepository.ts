@@ -1,9 +1,16 @@
 import {RequestModel} from "../../domain/request entity";
+import {ObjectId} from "mongodb";
 
 
 export const requestRepository = {
     async logRequest(date: Date, url: string, ip: string) {
-        const result = await RequestModel.create({date, url, ip});
+        const result = await RequestModel.create({
+            _id: new ObjectId(),
+            date,
+            url,
+            ip
+        });
+        console.log(result)
         return !!result.id;
     },
 

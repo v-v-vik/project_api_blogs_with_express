@@ -1,9 +1,10 @@
 import {SessionModel} from "../../domain/session entity";
-import {Payload} from "../../input-output-types/auth types";
+import {PayloadRT} from "../../input-output-types/auth types";
+import {ObjectId} from "mongodb";
 
 
 export const sessionRepository = {
-    async tokenListed(tokenContent: Payload): Promise<boolean> {
+    async tokenListed(tokenContent: PayloadRT): Promise<boolean> {
         const res = await SessionModel.findOne({
             lastActiveDate: tokenContent.iat.toString(),
             deviceId: tokenContent.deviceId,
@@ -12,8 +13,9 @@ export const sessionRepository = {
         return !!res;
     },
 
-    async addSession(tokenContent: Payload, ip: string, userAgent: string, deviceId: string) {
+    async addSession(tokenContent: PayloadRT, ip: string, userAgent: string, deviceId: string) {
         const result = await SessionModel.create({
+            _id: new ObjectId(),
             ip,
             title: userAgent,
             lastActiveDate: tokenContent.iat.toString(),
@@ -29,7 +31,7 @@ export const sessionRepository = {
         return SessionModel.deleteMany({})
     },
 
-    async terminateAllSessions(payload: Payload) {
+    async terminateAllSessions(payload: PayloadRT) {
         const result = await SessionModel.deleteMany({
             $and: [
                 {deviceId: { $ne: payload.deviceId}},
@@ -46,7 +48,7 @@ export const sessionRepository = {
         return !!result
     },
 
-    async updateSession(tokenContent: Payload, newIat: number) {
+    async updateSession(tokenContent: PayloadRT, newIat: number) {
         const res = await SessionModel.updateOne(
             {lastActiveDate:tokenContent.iat.toString(), deviceId: tokenContent.deviceId, userId:tokenContent.userId},
             {
