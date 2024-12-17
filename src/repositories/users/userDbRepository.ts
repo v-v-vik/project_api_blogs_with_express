@@ -36,7 +36,11 @@ export const userRepository = {
     },
 
     async findUserById(id: string): Promise<UserDBType | null> {
-        return UserModel.findOne({_id:id});
+        const result = UserModel.findOne({_id:id});
+        if (!result) {
+            return null;
+        }
+        return result;
     },
 
     async deleteUser(id: string): Promise<boolean> {

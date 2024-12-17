@@ -11,6 +11,7 @@ export const createCommentController = async (req: Request<ParamType, any, Comme
 
 
     const foundPost = await postRepository.findPostById(req.params.id);
+
     if (!foundPost) {
         res.status(404).json()
         return;
@@ -24,6 +25,7 @@ export const createCommentController = async (req: Request<ParamType, any, Comme
         res.status(400)
         return;
     }
+
     const newComment = await commentQueryRepository.getCommentById(newCommentId);
 
     res

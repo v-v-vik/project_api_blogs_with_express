@@ -10,7 +10,7 @@ export const blogRepository = {
 
     async updateBlog(blog: BlogInputModel, id: string): Promise<boolean> {
         const res = await BlogModel.updateOne(
-               {id},
+               {_id: id},
                {
                    $set: {...blog}
                }
@@ -19,7 +19,7 @@ export const blogRepository = {
     },
 
     async deleteBlog(id: string): Promise<boolean> {
-        await BlogModel.deleteOne({id});
+        await BlogModel.deleteOne({_id: id});
         return true;
         },
 
@@ -29,7 +29,7 @@ export const blogRepository = {
     },
 
     async findBlogById(id: string) {
-        const res = await BlogModel.findOne({id}).lean();
+        const res = await BlogModel.findOne({_id: id});
         if (!res) return null;
         return res
 

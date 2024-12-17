@@ -29,7 +29,9 @@ export const blogService: any = {
 
     async deleteBlog(id: string): Promise<boolean> {
         const foundBlog: WithId<BlogDBType> | null = await blogRepository.findBlogById(id);
+        console.log(foundBlog)
         if (foundBlog) {
+            console.log("Blog is found and will be deleted")
             return await blogRepository.deleteBlog(id);
         } else {
             return false;

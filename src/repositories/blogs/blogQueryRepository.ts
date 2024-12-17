@@ -18,7 +18,6 @@ export const blogQueryRepository = {
 
     async getBlogById(id: string)  {
         const result = await BlogModel.findOne({_id: id});
-        console.log(result);
         if (!result) {
             return null;
         }

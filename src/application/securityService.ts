@@ -1,10 +1,10 @@
 import {sessionRepository} from "../repositories/guard/sessionRepository";
 import {ResultModel, ResultStatus} from "../domain/result-object/result code";
-import {Payload} from "../input-output-types/auth types";
+import {PayloadRT} from "../input-output-types/auth types";
 
 
 export const securityService = {
-    async terminateSessionById(payload: Payload, deviceId: string): Promise<ResultModel> {
+    async terminateSessionById(payload: PayloadRT, deviceId: string): Promise<ResultModel> {
         const foundSession = await sessionRepository.findSessionById(deviceId);
         if (!foundSession) {
             return {
@@ -32,7 +32,7 @@ export const securityService = {
 
     },
 
-    async terminateAllSessions(payload: Payload) {
+    async terminateAllSessions(payload: PayloadRT) {
        const res: boolean = await sessionRepository.terminateAllSessions(payload);
        if (!res) {
            return {

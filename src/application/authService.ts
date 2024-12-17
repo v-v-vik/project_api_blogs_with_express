@@ -1,5 +1,5 @@
 import {userRepository} from "../repositories/users/userDbRepository";
-import {CodePayload, NewPwRecoveryInputModel, PasswordRecoveryModel, Payload} from "../input-output-types/auth types";
+import {CodePayload, NewPwRecoveryInputModel, PasswordRecoveryModel, PayloadRT} from "../input-output-types/auth types";
 import {bcryptService} from "../adapters/bcrypt.service";
 import {jwtService} from "../adapters/jwtService";
 import {randomUUID} from "node:crypto";
@@ -35,7 +35,7 @@ export const authService = {
         const accessToken = jwtService.createAccessToken(user._id.toString());
         const refreshToken = jwtService.createRefreshToken(user._id.toString(),dId);
 
-        const payload = jwtService.verifyRefreshToken(refreshToken) as Payload;
+        const payload = jwtService.verifyRefreshToken(refreshToken) as PayloadRT;
 
         const result = await sessionRepository.addSession(payload, ip, deviceName, dId);
         if (result) {
@@ -179,7 +179,7 @@ export const authService = {
         }
     },
 
-    async refreshToken(userData: Payload) {
+    async refreshToken(userData: PayloadRT) {
         const userId = userData.userId;
         const newAccessToken = jwtService.createAccessToken(userId);
         const newRefreshToken = jwtService.createRefreshToken(userId, userData.deviceId);

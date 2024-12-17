@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../adapters/jwtService";
 import {HttpStatuses} from "../domain/result-object/result code";
 import {sessionRepository} from "../repositories/guard/sessionRepository";
-import {Payload} from "../input-output-types/auth types";
+import {PayloadRT} from "../input-output-types/auth types";
 
 
 export const refreshTokenMiddleware = async (req: Request,
@@ -14,7 +14,7 @@ export const refreshTokenMiddleware = async (req: Request,
         return;
     }
 
-    const payload = jwtService.verifyRefreshToken(refreshToken) as Payload;
+    const payload = jwtService.verifyRefreshToken(refreshToken) as PayloadRT;
     if (!payload) {
         res.sendStatus(HttpStatuses.Unauthorized);
         return;

@@ -9,9 +9,15 @@ export type NewPwRecoveryInputModel = {
     recoveryCode: string
 }
 
-export type Payload = {
+export type PayloadRT = {
     userId: string,
     deviceId: string,
+    iat: number,
+    exp: number
+}
+
+export type PayloadAT = {
+    userId: string,
     iat: number,
     exp: number
 }
