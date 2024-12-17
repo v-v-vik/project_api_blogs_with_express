@@ -1,10 +1,10 @@
-import {ObjectId, Sort} from "mongodb";
-import {blogCollection} from "../db";
+import {Sort} from "mongodb";
 import {QueryType} from "../../input-output-types/some";
-import {BlogDBType} from "../../input-output-types/blog types";
+import {BlogDBType, BlogModel} from "../../domain/blog entity";
+
 
 const blogOutputMapper = (blog:any) => ({
-    id: blog._id.toString(),
+    id: blog._id,
     name: blog.name,
     description: blog.description,
     websiteUrl: blog.websiteUrl,
@@ -17,12 +17,11 @@ const blogOutputMapper = (blog:any) => ({
 export const blogQueryRepository = {
 
     async getBlogById(id: string)  {
-        const result = await blogCollection.findOne({_id: new ObjectId(id)});
-        if (result) {
-            return blogOutputMapper(result);
+        const result = await BlogModel.findOne({_id: id});
+        if (!result) {
+            return null;
         }
-        return null;
-
+        return blogOutputMapper(result);
     },
 
 
@@ -31,7 +30,7 @@ export const blogQueryRepository = {
         const filter: any = {};
         //Set the filter to search by id if provided
         if (id) {
-            filter._id = new ObjectId(id);
+            filter._id = id
         }
         //Set the filter to search by term in blog title
         const searchNameTerm = query.searchNameTerm ?? null;
@@ -55,17 +54,18 @@ export const blogQueryRepository = {
 
 
         try {
-            const items = await blogCollection
+            const items = await BlogModel
                 .find(filter)
                 .sort(sort)
                 .skip(skip)
                 .limit(pageSize)
-                .toArray() as BlogDBType[]
+                .lean() as BlogDBType[]
+
 
 
 
             //Count total documents
-            const totalCount = await blogCollection.countDocuments(filter);
+            const totalCount = await BlogModel.countDocuments(filter);
             const mappedBlogs = items.map((blog) => blogOutputMapper(blog));
 
 

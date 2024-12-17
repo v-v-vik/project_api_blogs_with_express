@@ -1,5 +1,5 @@
-import {BlogInputModel} from "./blog types";
-import {PostInputModel} from "./post types";
+import {BlogInputModel} from "../domain/blog entity";
+import {PostInputModel} from "../domain/post entity";
 
 
 export type FieldNamesType = keyof BlogInputModel | keyof PostInputModel

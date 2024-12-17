@@ -1,8 +1,8 @@
-import {UserInputModel} from "../../input-output-types/user auth types";
 import {Request, Response} from "express";
 import {matchedData} from "express-validator";
-import {authService} from "../../domain/authService";
-import {HttpStatuses, resultCode, ResultStatus} from "../../result-object/result code";
+import {authService} from "../../application/authService";
+import {HttpStatuses, resultCode, ResultStatus} from "../../domain/result-object/result code";
+import {UserInputModel} from "../../domain/user entity";
 
 
 export const registrationController = async (req: Request<any, any, UserInputModel>,

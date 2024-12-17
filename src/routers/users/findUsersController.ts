@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import {Paginator, UsersQueryFieldsType} from "../../input-output-types/some";
-import {UserViewModel} from "../../input-output-types/user auth types";
 import {userQueryRepository} from "../../repositories/users/userQueryRepository";
+import {UserViewModel} from "../../domain/user entity";
 
 
 export const findUsersController = async (req: Request<any, any, any, UsersQueryFieldsType>,

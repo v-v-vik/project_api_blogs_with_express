@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import {ParamType} from "../../input-output-types/some";
-import {blogService} from "../../domain/blogService";
+import {blogService} from "../../application/blogService";
 
 
 export const deleteBlogController = async (req: Request<ParamType>,

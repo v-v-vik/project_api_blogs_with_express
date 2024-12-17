@@ -1,5 +1,6 @@
 import {OutputErrorsType} from "./error output types";
-import {BlogDBType} from "./blog types";
+import {BlogDBType} from "../domain/blog entity";
+
 
 export type ParamType = {
     id: string
@@ -41,7 +42,7 @@ export type OutputType = void | OutputErrorsType | BlogDBType
 
 export type Paginator<T> = {
     pagesCount: number;
-    page: number;
+    page: number
     pageSize: number;
     totalCount: number;
     items: T[];

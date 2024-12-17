@@ -1,17 +1,16 @@
-import {BlogDBType, BlogInputModel} from "../../input-output-types/blog types";
-import {blogCollection} from "../db";
-import {ObjectId} from "mongodb";
+
+import {BlogDBType, BlogInputModel, BlogModel} from "../../domain/blog entity";
 
 
 export const blogRepository = {
     async createBlog(newBlog:BlogDBType) : Promise<string> {
-        const result = await blogCollection.insertOne(newBlog);
-        return result.insertedId.toString();
+        const blog = await BlogModel.create(newBlog);
+        return blog.id;
     },
 
     async updateBlog(blog: BlogInputModel, id: string): Promise<boolean> {
-        const res = await blogCollection.updateOne(
-               {_id:new ObjectId(id)},
+        const res = await BlogModel.updateOne(
+               {_id: id},
                {
                    $set: {...blog}
                }
@@ -20,21 +19,20 @@ export const blogRepository = {
     },
 
     async deleteBlog(id: string): Promise<boolean> {
-        await blogCollection.deleteOne({_id: new ObjectId(id)});
+        await BlogModel.deleteOne({_id: id});
         return true;
         },
 
     async deleteAllBlogs(): Promise<boolean> {
-        await blogCollection.deleteMany({});
+        await BlogModel.deleteMany({});
         return true;
     },
 
     async findBlogById(id: string) {
-        const result = await blogCollection.findOne({_id:new ObjectId(id)});
-        if (result) {
-            return result;
-        }
-        return null;
+        const res = await BlogModel.findOne({_id: id});
+        if (!res) return null;
+        return res
+
     }
 }
 

@@ -10,3 +10,6 @@ export const codeValidator = body('code')
             throw new Error("Incorrect code");
         }
     })
+
+export const recoveryCodeValidator = body('recoveryCode')
+    .isString().withMessage('Code is not valid')

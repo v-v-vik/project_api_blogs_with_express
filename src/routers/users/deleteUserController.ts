@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {userService} from "../../domain/userService";
+import {userService} from "../../application/userService";
 import {ParamType} from "../../input-output-types/some";
 
 export const deleteUserController = async (req:Request<ParamType>,

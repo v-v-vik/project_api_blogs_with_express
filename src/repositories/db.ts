@@ -1,46 +1,26 @@
-import {BlogDBType} from "../input-output-types/blog types";
-import {PostDBType} from "../input-output-types/post types";
 import {SETTINGS} from "../settings";
-import {MongoClient} from "mongodb";
-import {DeviceAuthSessionDBModel, RequestLogDBModel, UserDBType} from "../input-output-types/user auth types";
-import {CommentDBType} from "../input-output-types/comment types";
+import mongoose from "mongoose";
 
 
+// export const client = new MongoClient(SETTINGS.MONGO_URI);
 
-export type DBType = {
-    blogs: BlogDBType[],
-    posts: PostDBType[],
-    users: UserDBType[],
-    comments: CommentDBType[]
-}
+// export const db = client.db(SETTINGS.DB_NAME);
 
-
-// export const db_mockup: DBType = {
-//     blogs: [],
-//     posts: []
-// }
-
-
-export const client = new MongoClient(SETTINGS.MONGO_URI);
-
-export const db = client.db(SETTINGS.DB_NAME);
-export const blogCollection = db.collection<BlogDBType>(SETTINGS.PATH.BLOGS);
-export const postCollection = db.collection<PostDBType>(SETTINGS.PATH.POSTS);
-export const userCollection = db.collection<UserDBType>(SETTINGS.PATH.USERS);
-export const commentCollection = db.collection<CommentDBType>(SETTINGS.PATH.COMMENTS);
-export const sessionCollection = db.collection<DeviceAuthSessionDBModel>("deviceAuthSessions");
-export const requestCollection = db.collection<RequestLogDBModel>("requestLogs");
+// //export const blogCollection = db.collection<BlogDBType>(SETTINGS.PATH.BLOGS);
+// export const postCollection = db.collection<PostDBType>(SETTINGS.PATH.POSTS);
+// export const userCollection = db.collection<UserDBType>(SETTINGS.PATH.USERS);
+// export const commentCollection = db.collection<CommentDBType>(SETTINGS.PATH.COMMENTS);
+// export const sessionCollection = db.collection<DeviceAuthSessionDBModel>("deviceAuthSessions");
+// export const requestCollection = db.collection<RequestLogDBModel>("requestLogs");
 
 export async function runDB() {
 
     try {
-        await client.connect();
-        await db.command({ ping:1 });
-        console.log('DB_NAME', SETTINGS.DB_NAME)
-        console.log("Connected successfully to mongo server.");
+        await mongoose.connect(SETTINGS.MONGO_URI + "/" + SETTINGS.DB_NAME);
+        console.log("Connected successfully with Mongoose.");
     } catch {
-        console.log("Failed to connect to database.")
-        await client.close();
+        console.log("Failed to connect to database.");
+        await mongoose.disconnect();
     }
 
 

@@ -1,8 +1,8 @@
 
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
-import {securityService} from "../../domain/securityService";
-import {HttpStatuses, resultCode, ResultModel, ResultStatus} from "../../result-object/result code";
+import {securityService} from "../../application/securityService";
+import {HttpStatuses, resultCode, ResultModel, ResultStatus} from "../../domain/result-object/result code";
 
 
 

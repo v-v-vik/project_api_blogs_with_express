@@ -1,16 +1,17 @@
 import {userRepository} from "../repositories/users/userDbRepository";
-import {AccountStatusCodes, LoginInputModel, UserDBType, UserInputModel} from "../input-output-types/user auth types";
+import {CodePayload, NewPwRecoveryInputModel, PasswordRecoveryModel, PayloadRT} from "../input-output-types/auth types";
 import {bcryptService} from "../adapters/bcrypt.service";
 import {jwtService} from "../adapters/jwtService";
 import {randomUUID} from "node:crypto";
 import add from "date-fns/add";
 import {nodemailerService} from "../adapters/nodemailerService";
 import {emailTemplates} from "../adapters/emailTemplates";
-import {ResultStatus} from "../result-object/result code";
+import {ResultStatus} from "../domain/result-object/result code";
 import {userService} from "./userService";
 import {ObjectId} from "mongodb";
 import {sessionRepository} from "../repositories/guard/sessionRepository";
-import {Payload} from "../input-output-types/token";
+import {AccountStatusCodes, LoginInputModel, UserDBType, UserInputModel} from "../domain/user entity";
+
 
 
 
@@ -34,7 +35,7 @@ export const authService = {
         const accessToken = jwtService.createAccessToken(user._id.toString());
         const refreshToken = jwtService.createRefreshToken(user._id.toString(),dId);
 
-        const payload = jwtService.verifyRefreshToken(refreshToken) as Payload;
+        const payload = jwtService.verifyRefreshToken(refreshToken) as PayloadRT;
 
         const result = await sessionRepository.addSession(payload, ip, deviceName, dId);
         if (result) {
@@ -102,7 +103,7 @@ export const authService = {
 
         const newUserId = await userRepository.createUser(newUserData);
         nodemailerService
-            .sendEmail(
+            .sendRegistrationConfirmationEmail(
                 newUserData.accountData.email,
                 newUserData.emailConfirmation.confirmationCode,
                 emailTemplates.registrationEmail
@@ -165,7 +166,7 @@ export const authService = {
         }
 
         nodemailerService
-            .sendEmail(
+            .sendRegistrationConfirmationEmail(
                 user.accountData.email,
                 newCode,
                 emailTemplates.registrationEmail
@@ -178,7 +179,7 @@ export const authService = {
         }
     },
 
-    async refreshToken(userData: Payload) {
+    async refreshToken(userData: PayloadRT) {
         const userId = userData.userId;
         const newAccessToken = jwtService.createAccessToken(userId);
         const newRefreshToken = jwtService.createRefreshToken(userId, userData.deviceId);
@@ -204,6 +205,51 @@ export const authService = {
             status: ResultStatus.NoContent,
             data:null
         }
+    },
+
+    async newPasswordRequest(data: PasswordRecoveryModel) {
+
+        const newCode = jwtService.createRecoveryCode(data.email);
+        nodemailerService
+            .sendPasswordRecoveryEmail(
+                data.email,
+                newCode,
+                emailTemplates.passwordRecoveryEmail
+            )
+            .catch(error => console.log("error when trying to send email", error));
+
+        return true
+    },
+
+    async passwordUpdate(data: NewPwRecoveryInputModel) {
+        const { newPassword, recoveryCode } = data;
+        const codePayload = jwtService.verifyRecoveryCode(recoveryCode) as CodePayload;
+        if (!codePayload) {
+            return {
+                status: ResultStatus.BadRequest,
+                data: {errorsMessages: [{field: 'recoveryCode', message: 'code expired or incorrect'}] }
+            }
+        }
+        const user: UserDBType | null = await userRepository.checkUserByEmailOrLogin(codePayload.email);
+        if (!user) {
+            return {
+                status: ResultStatus.Unauthorized,
+                data: { errorsMessages: [{field: 'user', message: 'user does not exist'}] }
+            }
+        }
+        const newHashedPassword = await bcryptService.passwordHash(newPassword);
+        const res = await userRepository.updatePassword(user?._id.toString(), newHashedPassword);
+        if (!res) {
+            return {
+                status: ResultStatus.BadRequest,
+                data: {errorsMessages: [{field: 'password recovery', message: 'could not update password'}] }
+            }
+        }
+        return {
+            status: ResultStatus.NoContent,
+            data: null
+        }
+
     }
 
 

@@ -1,9 +1,9 @@
-import {AccountStatusCodes, UserDBType, UserInputModel} from "../input-output-types/user auth types";
 import {bcryptService} from "../adapters/bcrypt.service";
 import {userRepository} from "../repositories/users/userDbRepository";
 import {randomUUID} from "node:crypto";
 import add from "date-fns/add";
 import {ObjectId} from "mongodb";
+import {AccountStatusCodes, UserDBType, UserInputModel} from "../domain/user entity";
 
 
 export const userService = {
@@ -51,7 +51,9 @@ export const userService = {
     },
 
     async findUserById(id: string) {
-        return await userRepository.findUserById(id);
+        const res = await userRepository.findUserById(id);
+        if (!res) return null;
+        return res
     },
 
     async findUserByCode(code: string): Promise<UserDBType | null> {

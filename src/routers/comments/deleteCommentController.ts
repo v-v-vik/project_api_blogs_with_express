@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
-import {commentService} from "../../domain/commentService";
+import {commentService} from "../../application/commentService";
 
 export const deleteCommentController = async (req: Request<ParamType>,
                                            res: Response) => {

@@ -1,8 +1,8 @@
 import {Request, Response} from "express";
 import {ParamType} from "../../input-output-types/some";
-import {BlogInputModel} from "../../input-output-types/blog types";
-import {blogService} from "../../domain/blogService";
+import {blogService} from "../../application/blogService";
 import {matchedData} from "express-validator";
+import {BlogInputModel} from "../../domain/blog entity";
 
 
 export const updateBlogController = async (req: Request<ParamType, any, BlogInputModel>,

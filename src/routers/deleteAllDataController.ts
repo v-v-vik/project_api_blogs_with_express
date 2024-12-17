@@ -1,8 +1,8 @@
 import {Request, Response} from 'express';
-import {blogService} from "../domain/blogService";
-import {postService} from "../domain/postService";
-import {userService} from "../domain/userService";
-import {commentService} from "../domain/commentService";
+import {blogService} from "../application/blogService";
+import {postService} from "../application/postService";
+import {userService} from "../application/userService";
+import {commentService} from "../application/commentService";
 import {sessionRepository} from "../repositories/guard/sessionRepository";
 import {requestRepository} from "../repositories/guard/requestRepository";
 

@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
-import {authService} from "../../domain/authService";
-import {HttpStatuses, ResultStatus} from "../../result-object/result code";
+import {authService} from "../../application/authService";
+import {HttpStatuses, ResultStatus} from "../../domain/result-object/result code";
 
 
 export const refreshTokenController = async (req: Request,

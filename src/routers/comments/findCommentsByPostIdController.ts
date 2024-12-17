@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {postService} from "../../domain/postService";
+import {postService} from "../../application/postService";
 import {commentQueryRepository} from "../../repositories/comments/commentQueryRepository";
 
 export const findCommentsByPostIdController = async (req: Request,

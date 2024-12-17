@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../adapters/jwtService";
-import {userService} from "../domain/userService";
+import {PayloadAT} from "../input-output-types/auth types";
 
 export const accessTokenMiddleware = async (req: Request,
                                       res: Response,
@@ -12,19 +12,15 @@ export const accessTokenMiddleware = async (req: Request,
 
     const token = req.headers.authorization.split(' ')[1];
 
-    const tokenUserId = jwtService.getUserIdByAccessToken(token);
-    if (!tokenUserId) {
+    const tokenPayload = jwtService.getUserIdByAccessToken(token) as PayloadAT;
+
+    if (!tokenPayload) {
         res.sendStatus(401);
         return;
     }
 
-    const user = await userService.findUserById(tokenUserId.id);
-    if (!user) {
-        res.sendStatus(401);
-        return;
-    }
 
-    req.user = tokenUserId;
-    next()
-
+    req.user = {id: tokenPayload.userId};
+    next();
+    return;
 }

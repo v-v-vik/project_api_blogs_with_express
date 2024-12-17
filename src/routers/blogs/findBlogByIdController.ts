@@ -1,11 +1,10 @@
 import {Request, Response} from 'express';
-import {BlogDBType} from "../../input-output-types/blog types";
-import {DBType} from "../../repositories/db";
 import {ParamType} from "../../input-output-types/some";
 import {blogQueryRepository} from "../../repositories/blogs/blogQueryRepository";
+import {BlogDBType} from "../../domain/blog entity";
 
 export const findBlogByIdController = async (req: Request<ParamType>,
-                                            res: Response<BlogDBType | DBType | any>) => {
+                                            res: Response<BlogDBType | any>) => {
 
 
     const searchBlog = await blogQueryRepository.getBlogById(req.params.id);

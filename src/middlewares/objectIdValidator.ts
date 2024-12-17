@@ -9,7 +9,8 @@ export const objectIdValidator = (req: Request <{id:string}>,
     const isValid: boolean = ObjectId.isValid(req.params.id);
 
     if (isValid) {
-        return next();
+        next();
+        return;
     } else {
         res.sendStatus(404)
         return;

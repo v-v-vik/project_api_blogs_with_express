@@ -1,10 +1,10 @@
-import {BlogDBType, BlogInputModel} from "../input-output-types/blog types";
 import {blogRepository} from "../repositories/blogs/blogDbRepository";
-import {ObjectId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
+import {BlogDBType, BlogInputModel} from "../domain/blog entity";
 
 
 export const blogService: any = {
-    async createBlog(data: BlogInputModel) {
+    async createBlog(data: BlogInputModel): Promise<string> {
         const newId = new ObjectId();
         const newEntry: BlogDBType = {
             _id: newId,
@@ -19,7 +19,7 @@ export const blogService: any = {
     },
 
     async updateBlog(id: string, blog: BlogInputModel): Promise<boolean> {
-        const foundBlog = await blogRepository.findBlogById(id);
+        const foundBlog: WithId<BlogDBType> | null = await blogRepository.findBlogById(id);
         if (foundBlog) {
             return await blogRepository.updateBlog(blog, id);
         } else {
@@ -28,15 +28,17 @@ export const blogService: any = {
     },
 
     async deleteBlog(id: string): Promise<boolean> {
-        const foundBlog = await blogRepository.findBlogById(id);
+        const foundBlog: WithId<BlogDBType> | null = await blogRepository.findBlogById(id);
+        console.log(foundBlog)
         if (foundBlog) {
+            console.log("Blog is found and will be deleted")
             return await blogRepository.deleteBlog(id);
         } else {
             return false;
         }
     },
 
-    async deleteAllBlogs() {
+    async deleteAllBlogs(): Promise<boolean> {
         return await blogRepository.deleteAllBlogs()
     }
 

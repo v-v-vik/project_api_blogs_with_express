@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {requestRepository} from "../../repositories/guard/requestRepository";
-import {HttpStatuses} from "../../result-object/result code";
+import {HttpStatuses} from "../../domain/result-object/result code";
 
 export const requestLogger = async (request: Request,
                                     response: Response,

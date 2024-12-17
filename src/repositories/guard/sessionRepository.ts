@@ -1,12 +1,11 @@
-
+import {SessionModel} from "../../domain/session entity";
+import {PayloadRT} from "../../input-output-types/auth types";
 import {ObjectId} from "mongodb";
-import {sessionCollection} from "../db";
-import {Payload} from "../../input-output-types/token";
 
 
 export const sessionRepository = {
-    async tokenListed(tokenContent: Payload): Promise<boolean> {
-        const res = await sessionCollection.findOne({
+    async tokenListed(tokenContent: PayloadRT): Promise<boolean> {
+        const res = await SessionModel.findOne({
             lastActiveDate: tokenContent.iat.toString(),
             deviceId: tokenContent.deviceId,
             userId: tokenContent.userId
@@ -14,9 +13,9 @@ export const sessionRepository = {
         return !!res;
     },
 
-    async addSession(tokenContent: Payload, ip: string, userAgent: string, deviceId: string) {
-        const result = await sessionCollection.insertOne({
-            _id: new ObjectId,
+    async addSession(tokenContent: PayloadRT, ip: string, userAgent: string, deviceId: string) {
+        const result = await SessionModel.create({
+            _id: new ObjectId(),
             ip,
             title: userAgent,
             lastActiveDate: tokenContent.iat.toString(),
@@ -24,16 +23,16 @@ export const sessionRepository = {
             userId: tokenContent.userId,
             expDate: tokenContent.exp.toString()
         });
-        return !!result.insertedId;
+        return !!result.id;
 
     },
 
     async deleteAllSessions() {
-        return await sessionCollection.deleteMany({})
+        return SessionModel.deleteMany({})
     },
 
-    async terminateAllSessions(payload: Payload) {
-        const result = await sessionCollection.deleteMany({
+    async terminateAllSessions(payload: PayloadRT) {
+        const result = await SessionModel.deleteMany({
             $and: [
                 {deviceId: { $ne: payload.deviceId}},
                 {iat: { $ne: payload.iat}}
@@ -45,12 +44,12 @@ export const sessionRepository = {
     },
 
     async terminateSessionById(deviceId: string) {
-        const result = await sessionCollection.deleteOne({deviceId});
+        const result = await SessionModel.deleteOne({deviceId});
         return !!result
     },
 
-    async updateSession(tokenContent: Payload, newIat: number) {
-        const res = await sessionCollection.updateOne(
+    async updateSession(tokenContent: PayloadRT, newIat: number) {
+        const res = await SessionModel.updateOne(
             {lastActiveDate:tokenContent.iat.toString(), deviceId: tokenContent.deviceId, userId:tokenContent.userId},
             {
                 $set: {lastActiveDate: newIat.toString()}
@@ -60,7 +59,7 @@ export const sessionRepository = {
     },
 
     async findSessionById(deviceId: string) {
-        const res = await sessionCollection.findOne({deviceId});
+        const res = await SessionModel.findOne({deviceId});
         if (!res) {
             return null;
         }
