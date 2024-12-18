@@ -1,21 +1,22 @@
 import {Request, Response} from 'express';
-import {blogService} from "../application/blogService";
-import {postService} from "../application/postService";
-import {userService} from "../application/userService";
-import {commentService} from "../application/commentService";
-import {sessionRepository} from "../repositories/guard/sessionRepository";
-import {requestRepository} from "../repositories/guard/requestRepository";
+import {BlogModel} from "../domain/blog entity";
+import {PostModel} from "../domain/post entity";
+import {UserModel} from "../domain/user entity";
+import {CommentModel} from "../domain/comment entity";
+import {RequestModel} from "../domain/request entity";
+import {SessionModel} from "../domain/session entity";
+import {LikeModel} from "../domain/like entity";
 
 
 export const deleteAllDataController = async (req: Request, res: Response) => {
-    const blogsDeleted = await blogService.deleteAllBlogs();
-    const postsDeleted = await postService.deleteAllPosts();
-    const usersDeleted = await userService.deleteAllUsers();
-    const commentsDeleted = await commentService.deleteAllComments();
-    const sessionsDeleted = await sessionRepository.deleteAllSessions();
-    const requestLogsDeleted = await requestRepository.deleteAllRequests();
-    if (blogsDeleted && postsDeleted && usersDeleted && commentsDeleted && sessionsDeleted && requestLogsDeleted) {
-        res.sendStatus(204);
-    }
+
+    await BlogModel.collection.drop();
+    await PostModel.collection.drop();
+    await CommentModel.collection.drop();
+    await RequestModel.collection.drop();
+    await UserModel.collection.drop();
+    await SessionModel.collection.drop();
+    await LikeModel.collection.drop();
+    res.sendStatus(204);
 
 }

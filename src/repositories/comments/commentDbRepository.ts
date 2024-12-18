@@ -1,6 +1,7 @@
 
 import {ResultStatus} from "../../domain/result-object/result code";
 import {CommentDBType, CommentInputModel, CommentModel} from "../../domain/comment entity";
+import {LikeInfoDBType} from "../../domain/like entity";
 
 
 export const commentRepository = {
@@ -46,6 +47,16 @@ export const commentRepository = {
             status: ResultStatus.NotFound,
             data: null
         }
+    },
+
+    async updateCommentLikes(commentId: string, update: Partial<LikeInfoDBType>) {
+        const result = await CommentModel.updateOne(
+            {_id: commentId},
+            {
+                $set: {likesInfo: update}
+            });
+        return result.matchedCount === 1
+
     }
 
 

@@ -9,7 +9,6 @@ import {CommentDBType, CommentInputModel} from "../../domain/comment entity";
 export const createCommentController = async (req: Request<ParamType, any, CommentInputModel>,
                                               res: Response) => {
 
-
     const foundPost = await postRepository.findPostById(req.params.id);
 
     if (!foundPost) {
@@ -31,5 +30,7 @@ export const createCommentController = async (req: Request<ParamType, any, Comme
     res
         .status(201)
         .json(newComment);
+
+
 
 }

@@ -2,31 +2,41 @@
 import {QueryType} from "../../input-output-types/some";
 import {sortQueryFields} from "../../utils/sortQueryFields.utils";
 import {CommentDBType, CommentModel} from "../../domain/comment entity";
+import {LikeStatus} from "../../domain/like entity";
+import {likeRepository} from "../likes/likeDBRepository";
 
-const commentOutputMapper = (comment: CommentDBType) =>  ({
+const commentOutputMapper = (comment: CommentDBType, userReaction: LikeStatus) =>  ({
     id: comment._id,
     content: comment.content,
     commentatorInfo: {
         userId: comment.commentatorInfo.userId,
         userLogin: comment.commentatorInfo.userLogin
     },
-    createdAt: comment.createdAt
+    createdAt: comment.createdAt,
+    likesInfo: {
+        likesCount: comment.likesInfo.likesCount,
+        dislikesCount: comment.likesInfo.dislikesCount,
+        myStatus: userReaction
+    }
 })
 
 export const commentQueryRepository = {
-    async getCommentById(id: string) {
+    async getCommentById(id: string, userId?: string) {
+        let userReaction: LikeStatus = LikeStatus.None;
         const comment = await CommentModel.findOne({_id: id});
         if (!comment) return null;
-        return commentOutputMapper(comment);
+        if (userId) {
+            const res = await likeRepository.findReactionByParentId(id, userId);
+            if (res) {
+                userReaction = res;
+            }
+        }
+        return commentOutputMapper(comment, userReaction);
     },
 
-    async findCommentsByPostId(id: string, query: QueryType) {
-
-
+    async findCommentsByPostId(id: string, query: QueryType, userId?: string) {
 
         const sortResult = sortQueryFields(query);
-
-
 
         try {
             const items = await CommentModel
@@ -36,11 +46,21 @@ export const commentQueryRepository = {
                 .limit(sortResult.pageSize)
                 .lean() as CommentDBType[]
 
-
-
             const totalCount = await CommentModel.countDocuments({postId:id});
 
-            const mappedComments = items.map((comment) => commentOutputMapper(comment));
+
+            const mappedComments = await Promise.all (items.map(async(comment) => {
+
+                let userReaction: LikeStatus = LikeStatus.None;
+                if (userId) {
+                    const res = await likeRepository.findReactionByParentId(id, userId);
+                    if (res) {
+                        userReaction = res;
+                    }
+                }
+                return commentOutputMapper(comment, userReaction);
+
+            }));
 
             return {
                 pagesCount: Math.ceil(totalCount / sortResult.pageSize),

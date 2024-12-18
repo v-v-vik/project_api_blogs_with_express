@@ -13,6 +13,7 @@ export enum ResultStatus {
     Created = 'Created',
     NoContent = 'NoContent',
     TooManyRequests = 'TooManyRequests',
+    ServerError = 'ServerError'
 
 }
 
