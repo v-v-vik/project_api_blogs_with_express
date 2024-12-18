@@ -11,10 +11,10 @@ export const commentRepository = {
         return result.id;
     },
 
-    async deleteAllComments() {
-        await CommentModel.deleteMany({});
-        return true;
-    },
+    // async deleteAllComments() {
+    //     await CommentModel.deleteMany({});
+    //     return true;
+    // },
 
     async findCommentById(id: string) {
         const result = await CommentModel.findOne({_id:id});

@@ -9,7 +9,9 @@ export const findCommentByIdController = async (req: Request,
                                                 res: Response) => {
 
     let tokenPayload: PayloadAT | null = null;
+    console.log("there was something in the headers:", req.headers.authorization)
     if (req.headers.authorization) {
+
         const token = req.headers.authorization.split(' ')[1];
 
         tokenPayload = jwtService.getUserIdByAccessToken(token) as PayloadAT;

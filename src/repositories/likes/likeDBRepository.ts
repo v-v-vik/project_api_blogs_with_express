@@ -18,21 +18,22 @@ export const likeRepository = {
         const res = await LikeModel.findOne({
             parentId: commentId,
             authorId: userId
-        })
+        }).sort({createdAt: -1}).lean();
+        console.log("res in repo:", res)
         if (!res) {
             return null;
         }
         return res.status;
     },
 
-    async deleteReaction(commentId: string, userId: string) {
-        const res = await LikeModel.deleteOne({
-            authorId: userId,
-            parentId: commentId
-        })
-        if (!res) {
-            return null;
-        }
-        return res;
-    }
+    // async deleteReaction(commentId: string, userId: string) {
+    //     const res = await LikeModel.deleteOne({
+    //         authorId: userId,
+    //         parentId: commentId
+    //     })
+    //     if (!res) {
+    //         return null;
+    //     }
+    //     return res;
+    // }
 }

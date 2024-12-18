@@ -11,7 +11,6 @@ export const commentService = {
     async createComment(data: CommentInputModel, postId:string, userId: string): Promise<string | null> {
         const newId = new ObjectId();
         const foundUser = await userService.findUserById(userId);
-
         if (foundUser) {
             const newEntry: CommentDBType = {
                 _id: newId,
@@ -24,7 +23,7 @@ export const commentService = {
                 postId:postId,
                 likesInfo: {
                     likesCount: 0,
-                    dislikesCount: 0
+                    dislikesCount: 0,
                 }
             }
 
@@ -80,6 +79,7 @@ export const commentService = {
         }
 
         const currentStatus = await likeRepository.findReactionByParentId(commentId, userId);
+        console.log("current status is", currentStatus)
         if (currentStatus === data.likeStatus) {
             return {
                 status: ResultStatus.NoContent,
@@ -90,19 +90,23 @@ export const commentService = {
         const update: Partial<LikeInfoDBType> = {};
         if (data.likeStatus === LikeStatus.Like) {
             update.likesCount = (foundComment.likesInfo.likesCount || 0) + 1;
+            update.dislikesCount = foundComment.likesInfo.dislikesCount;
             if (currentStatus === LikeStatus.Dislike) {
                 update.dislikesCount = (foundComment.likesInfo.dislikesCount || 0) - 1;
             }
         } else if (data.likeStatus === LikeStatus.Dislike) {
             update.dislikesCount = (foundComment.likesInfo.dislikesCount || 0) + 1;
+            update.likesCount = foundComment.likesInfo.likesCount;
             if (currentStatus === LikeStatus.Like) {
                 update.likesCount = (foundComment.likesInfo.likesCount || 0) - 1;
             }
         } else if (data.likeStatus === LikeStatus.None) {
             if (currentStatus === LikeStatus.Like) {
                 update.likesCount = (foundComment.likesInfo.likesCount || 0) - 1;
+                update.dislikesCount = foundComment.likesInfo.dislikesCount
             } else if (currentStatus === LikeStatus.Dislike) {
                 update.dislikesCount = (foundComment.likesInfo.dislikesCount || 0) - 1;
+                update.likesCount = foundComment.likesInfo.likesCount;
             }
         }
 

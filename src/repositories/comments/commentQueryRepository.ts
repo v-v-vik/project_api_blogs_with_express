@@ -26,17 +26,22 @@ export const commentQueryRepository = {
         const comment = await CommentModel.findOne({_id: id});
         if (!comment) return null;
         if (userId) {
+            console.log("passed userId:", userId)
             const res = await likeRepository.findReactionByParentId(id, userId);
             if (res) {
                 userReaction = res;
             }
         }
+        console.log("comment before mapping:", comment)
+
         return commentOutputMapper(comment, userReaction);
     },
 
     async findCommentsByPostId(id: string, query: QueryType, userId?: string) {
 
         const sortResult = sortQueryFields(query);
+
+        console.log("userId passed in QRepo", userId)
 
         try {
             const items = await CommentModel
@@ -53,7 +58,9 @@ export const commentQueryRepository = {
 
                 let userReaction: LikeStatus = LikeStatus.None;
                 if (userId) {
-                    const res = await likeRepository.findReactionByParentId(id, userId);
+                    console.log("passed in mapping userId:", userId)
+                    const res = await likeRepository.findReactionByParentId(comment._id.toString(), userId);
+                    console.log("last reaction:", res)
                     if (res) {
                         userReaction = res;
                     }

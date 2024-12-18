@@ -46,7 +46,7 @@ export const commentatorInfoSchema = new mongoose.Schema<CommentatorInfoModel>({
 
 export const likeInfoSchema = new mongoose.Schema<LikeInfoView>({
     likesCount: {type: Number, require: true},
-    dislikeCount:{type: Number, require: true}
+    dislikesCount: {type: Number, require: true}
 });
 
 
@@ -56,7 +56,7 @@ export const commentSchema = new mongoose.Schema<WithId<CommentDBType>>({
     commentatorInfo: {type:commentatorInfoSchema},
     createdAt: {type: String, require: true},
     postId: {type: String, require: true},
-    likesInfo: {type: likeInfoSchema}
+    likesInfo: {type: likeInfoSchema, require: true}
 });
 
 

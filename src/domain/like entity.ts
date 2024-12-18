@@ -27,7 +27,7 @@ export enum LikeStatus {
 
 export type LikeInfoView = {
     likesCount: number;
-    dislikeCount: number;
+    dislikesCount: number;
     myStatus: LikeStatus;
 }
 

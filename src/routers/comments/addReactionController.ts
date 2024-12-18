@@ -16,6 +16,7 @@ export const addReactionController = async (req: Request<ParamType, any, LikeInp
         res
             .status(resultCode(result.status))
             .send(result.data)
+        return;
     }
 
     res.status(HttpStatuses.NoContent).send();
