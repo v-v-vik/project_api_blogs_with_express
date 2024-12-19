@@ -72,7 +72,7 @@ export const commentService = {
         const foundComment = await commentRepository.findCommentById(commentId);
         if (!foundComment) {
             return {
-                status: ResultStatus.BadRequest,
+                status: ResultStatus.NotFound,
                 data: 'Comment does not exist'
 
             }
