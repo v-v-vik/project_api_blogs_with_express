@@ -3,13 +3,16 @@ import {postRepository} from "../repositories/posts/postDbRepository";
 import {blogRepository} from "../repositories/blogs/blogDbRepository";
 import {PostInputModel, PostInputModel2} from "../domain/post entity";
 import {BlogDBType} from "../domain/blog entity";
+import {blogQueryRepository} from "../repositories/blogs/blogQueryRepository";
+import {postQueryRepository} from "../repositories/posts/postQueryRepository";
+import {QueryType} from "../input-output-types/some";
 
 
-export const postService = {
-    async createPost(data: PostInputModel | PostInputModel2, blogId?:string): Promise<string | null> {
+class PostService {
+    async create(data: PostInputModel | PostInputModel2, blogId?: string): Promise<string | null> {
         const newId = new ObjectId();
         const resolvedBlogId: any = blogId || data.blogId;
-        const blog:BlogDBType | null = await blogRepository.findBlogById(resolvedBlogId);
+        const blog: BlogDBType | null = await blogRepository.findBlogById(resolvedBlogId);
         if (blog) {
             const newEntry = {
                 _id: newId,
@@ -21,36 +24,36 @@ export const postService = {
                 createdAt: new Date().toISOString()
             }
             return await postRepository.createPost(newEntry);
-
         }
-      return null;
+        return null;
+    }
 
-    },
-
-
-    async updatePost(id: string, post: PostInputModel):Promise<boolean> {
+    async update(id: string, post: PostInputModel): Promise<boolean> {
         const foundPost = await postRepository.findPostById(id);
         if (foundPost) {
-          return await postRepository.updatePost(id, post);
+            return await postRepository.updatePost(id, post);
         } else {
             return false;
         }
-    },
+    }
 
-    async deletePost(id: string) {
+    async delete(id: string) {
         const foundPost = await postRepository.findPostById(id);
         if (foundPost) {
             return await postRepository.deletePost(id);
         } else {
             return false;
         }
-    },
+    }
+    // async findById(id: string) {
+    //     return await postRepository.findPostById(id);
+    // }
 
-    async deleteAllPosts() {
-        return await postRepository.deleteAllPosts();
-    },
-
-    async findPostById(id: string) {
-        return await postRepository.findPostById(id);
+    async find(blogId: string, data: QueryType) {
+        const foundBlog = await blogQueryRepository.getBlogById(blogId);
+        if (!foundBlog) return null;
+        return postQueryRepository.getPostFilterByBlogID(data, blogId);
     }
 }
+
+export const postService = new PostService();

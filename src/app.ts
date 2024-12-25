@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import {deleteAllDataController} from "./routers/deleteAllDataController";
+import {deleteAllDataController} from "./controllers/deleteAllDataController";
 import {SETTINGS} from "./settings";
-import {blogRouter} from "./routers/blogs/blogs-router";
-import {postRouter} from "./routers/posts/posts-router";
-import {userRouter} from "./routers/users/users-router";
-import {authRouter} from "./routers/auth/auth-router";
-import {commentRouter} from "./routers/comments/comments-router";
+import {blogRouter} from "./routers/blogs-router";
+import {postRouter} from "./routers/posts-router";
+import {userRouter} from "./routers/users-router";
+import {authRouter} from "./routers/auth-router";
+import {commentRouter} from "./routers/comments-router";
 import cookieParser from "cookie-parser";
-import {sessionRouter} from "./routers/security/sessions-router";
+import {sessionRouter} from "./routers/sessions-router";
 
 export const app = express();
 app.use(express.json());

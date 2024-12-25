@@ -6,14 +6,13 @@ import {ObjectId} from "mongodb";
 import {AccountStatusCodes, UserDBType, UserInputModel} from "../domain/user entity";
 
 
-export const userService = {
-    async createUser(data: UserInputModel) {
+class UserService {
+
+    async create(data: UserInputModel) {
         const {login, password, email} = data;
         const user = await userRepository.findUserByEmailOrLogin(login, email);
         if (user) return null;
-
         const hashedPassword = await bcryptService.passwordHash(password);
-
         const newUserData:UserDBType = {
             _id: new ObjectId(),
             accountData: {
@@ -31,37 +30,32 @@ export const userService = {
                 status: AccountStatusCodes.confirmed
             }
         }
-
         return await userRepository.createUser(newUserData);
+    }
 
-    },
-
-
-    async deleteUser(id: string): Promise<boolean> {
+    async delete(id: string): Promise<boolean> {
         const user = await userRepository.findUserById(id);
         if (user) {
             return await userRepository.deleteUser(id);
         } else {
            return false;
         }
-    },
+    }
 
-    async deleteAllUsers() {
-        return await userRepository.deleteAllUsers();
-    },
-
-    async findUserById(id: string) {
+    async findById(id: string) {
         const res = await userRepository.findUserById(id);
         if (!res) return null;
         return res
-    },
+    }
 
-    async findUserByCode(code: string): Promise<UserDBType | null> {
+    async findByCode(code: string): Promise<UserDBType | null> {
         return await userRepository.findUserByCode(code);
-    },
+    }
 
-    async userConfirmationCodeUpdate(code: string, id: string): Promise<boolean> {
+    async updateConfirmationCode(code: string, id: string): Promise<boolean> {
         return await userRepository.confirmationCodeUpdate(code, id);
     }
 
 }
+
+export const userService = new UserService();

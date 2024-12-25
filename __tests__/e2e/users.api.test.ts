@@ -18,7 +18,6 @@ describe(SETTINGS.PATH.USERS, () => {
         await runDB();
         await req.delete("/testing/all-data")
             .expect(204)
-        console.log("Deleting DB")
     })
 
 

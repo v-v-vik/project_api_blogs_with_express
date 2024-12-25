@@ -13,13 +13,10 @@ import {sessionRepository} from "../repositories/guard/sessionRepository";
 import {AccountStatusCodes, LoginInputModel, UserDBType, UserInputModel} from "../domain/user entity";
 
 
-
-
-export const authService = {
+class AuthService {
     async loginUser(data: LoginInputModel, ip: string, deviceName: string) {
         const { loginOrEmail, password } = data;
         const user = await this.checkCredentials(loginOrEmail, password);
-
         if (!user) return {
             status: ResultStatus.Unauthorized,
             data: null
@@ -30,13 +27,10 @@ export const authService = {
                 data: null
             }
         }
-
         const dId = randomUUID();
         const accessToken = jwtService.createAccessToken(user._id.toString());
         const refreshToken = jwtService.createRefreshToken(user._id.toString(),dId);
-
         const payload = jwtService.verifyRefreshToken(refreshToken) as PayloadRT;
-
         const result = await sessionRepository.addSession(payload, ip, deviceName, dId);
         if (result) {
             return {
@@ -48,22 +42,16 @@ export const authService = {
             status: ResultStatus.BadRequest,
             data: null
         }
-
-
-
-
-    },
+    }
 
     async checkCredentials(loginOrEmail: string, password: string) {
         const user = await userRepository.checkUserByEmailOrLogin(loginOrEmail);
         if (!user) return null;
-
         const isPassCorrect = await bcryptService.checkPassword(password, user.accountData.password);
         if(!isPassCorrect) return null;
-
         return user;
 
-    },
+    }
 
     async registerUser(data: UserInputModel) {
         const {login, password, email} = data;
@@ -80,9 +68,7 @@ export const authService = {
                 errorsMessages: [{field: 'email', message: 'email already exists'}]
             }
         }
-
         const hashedPassword = await bcryptService.passwordHash(password);
-
         const newUserData:UserDBType = {
             _id: new ObjectId(),
             accountData: {
@@ -100,7 +86,6 @@ export const authService = {
                 status: AccountStatusCodes.notConfirmed
             }
         }
-
         const newUserId = await userRepository.createUser(newUserData);
         nodemailerService
             .sendRegistrationConfirmationEmail(
@@ -109,42 +94,33 @@ export const authService = {
                 emailTemplates.registrationEmail
             )
             .catch(error => console.log("error when trying to send email", error));
-
-
-
         return {
             status: ResultStatus.Success,
             data: newUserId
         }
-
-    },
+    }
 
     async confirmRegistration(code: string) {
-        const user = await userService.findUserByCode(code);
+        const user = await userService.findByCode(code);
         console.log("user to confirm:", user)
         if (!user) return {
             status: ResultStatus.BadRequest,
             data: { errorsMessages: [{field: 'code', message: 'code does not exist'}] }
         }
-
         if (user.emailConfirmation.status === 1) return {
             status: ResultStatus.BadRequest,
             data: { errorsMessages: [{field: 'code', message: 'user is confirmed'}] }
         }
-
-
         if (user.emailConfirmation.confirmationCode === code && user.emailConfirmation.expirationDate > new Date()) {
             const userId = user._id.toString();
             console.log("this user id", userId);
             return await userRepository.updateRegistrationStatus(userId);
         }
-
         return {
             status: ResultStatus.BadRequest,
             data: { errorsMessages: [{field: 'code', message: 'code expired'}] }
         }
-
-    },
+    }
 
     async confirmationEmailResend(email: string) {
         const user = await userRepository.checkUserByEmailOrLogin(email);
@@ -159,12 +135,11 @@ export const authService = {
             }
         }
         const newCode = randomUUID();
-        const result = await userService.userConfirmationCodeUpdate(newCode, user._id.toString());
+        const result = await userService.updateConfirmationCode(newCode, user._id.toString());
         if (!result) return {
             status: ResultStatus.BadRequest,
             data: null
         }
-
         nodemailerService
             .sendRegistrationConfirmationEmail(
                 user.accountData.email,
@@ -172,26 +147,23 @@ export const authService = {
                 emailTemplates.registrationEmail
             )
             .catch(error => console.log("error when trying to send email", error))
-
         return {
             status: ResultStatus.NoContent,
             data: null
         }
-    },
+    }
 
     async refreshToken(userData: PayloadRT) {
         const userId = userData.userId;
         const newAccessToken = jwtService.createAccessToken(userId);
         const newRefreshToken = jwtService.createRefreshToken(userId, userData.deviceId);
         const newTokenDate = jwtService.verifyRefreshToken(newRefreshToken) as { iat: number };
-        await sessionRepository.updateSession(userData, newTokenDate.iat)
-
+        await sessionRepository.updateSession(userData, newTokenDate.iat);
         return {
             status: ResultStatus.Success,
             data: [newAccessToken, newRefreshToken]
         }
-
-    },
+    }
 
     async logoutUser(deviceId: string) {
         const res = await sessionRepository.terminateSessionById(deviceId);
@@ -205,7 +177,7 @@ export const authService = {
             status: ResultStatus.NoContent,
             data:null
         }
-    },
+    }
 
     async newPasswordRequest(data: PasswordRecoveryModel) {
 
@@ -217,9 +189,8 @@ export const authService = {
                 emailTemplates.passwordRecoveryEmail
             )
             .catch(error => console.log("error when trying to send email", error));
-
         return true
-    },
+    }
 
     async passwordUpdate(data: NewPwRecoveryInputModel) {
         const { newPassword, recoveryCode } = data;
@@ -249,8 +220,7 @@ export const authService = {
             status: ResultStatus.NoContent,
             data: null
         }
-
     }
-
-
 }
+
+export const authService = new AuthService();

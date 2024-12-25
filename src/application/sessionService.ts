@@ -3,7 +3,7 @@ import {ResultModel, ResultStatus} from "../domain/result-object/result code";
 import {PayloadRT} from "../input-output-types/auth types";
 
 
-export const securityService = {
+class SessionService {
     async terminateSessionById(payload: PayloadRT, deviceId: string): Promise<ResultModel> {
         const foundSession = await sessionRepository.findSessionById(deviceId);
         if (!foundSession) {
@@ -29,8 +29,7 @@ export const securityService = {
             status: ResultStatus.NoContent,
             data: null
         }
-
-    },
+    }
 
     async terminateAllSessions(payload: PayloadRT) {
        const res: boolean = await sessionRepository.terminateAllSessions(payload);
@@ -44,7 +43,7 @@ export const securityService = {
            status: ResultStatus.NoContent,
            data: null
        }
-    },
-
-
+    }
 }
+
+export const sessionService = new SessionService();
