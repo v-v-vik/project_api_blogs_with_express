@@ -33,9 +33,6 @@ describe(SETTINGS.PATH.BLOGS, () => {
                 totalCount: 0,
                 items: []
             })
-
-
-
     })
 
 
@@ -93,20 +90,15 @@ describe(SETTINGS.PATH.BLOGS, () => {
                         createdAt: newBlog3.createdAt,
                         isMembership: newBlog3.isMembership
                     }
-
                 ]
             })
-
-
-
     })
 
     it("should create a new element", async () => {
         const newData = {
             name: "Beauty Blog",
             description: "Blog about make-up",
-            websiteUrl: "https://www.beauty-blog.com/",
-
+            websiteUrl: "https://www.beauty-blog.com/"
         }
 
 
@@ -116,7 +108,6 @@ describe(SETTINGS.PATH.BLOGS, () => {
             .send(newData)
 
         newBlog = res.body;
-
 
         expect(newBlog).toEqual({
             id: expect.any(String),

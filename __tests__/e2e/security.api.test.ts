@@ -34,19 +34,19 @@ describe(SETTINGS.PATH.SECURITY, () => {
 
     it ("it should return active sessions", async () => {
         //create new user
-        const userData = usersTestManager.createUserData({});
-        const newUser = await usersTestManager.createUser(userData);
+        const userData = usersTestManager.createData({});
+        const newUser = await usersTestManager.create(userData);
 
         userId = newUser._id;
         userLogin = newUser.accountData.login;
 
         //login user 4 times
 
-        tokenData = await usersTestManager.loginUser(userData.login, userData.password, 'Device1');
-        tokenData2 = await usersTestManager.loginUser(userData.login, userData.password, 'Device2');
+        tokenData = await usersTestManager.login(userData.login, userData.password, 'Device1');
+        tokenData2 = await usersTestManager.login(userData.login, userData.password, 'Device2');
         setTimeout(()=> new Promise(resolve => resolve), 5000);
-        tokenData3 = await usersTestManager.loginUser(userData.login, userData.password, 'Device3');
-        const {accessToken: accessToken2, refreshToken: refreshToken2} = await usersTestManager.loginUser(userData.login, userData.password, 'Device4');
+        tokenData3 = await usersTestManager.login(userData.login, userData.password, 'Device3');
+        const {accessToken: accessToken2, refreshToken: refreshToken2} = await usersTestManager.login(userData.login, userData.password, 'Device4');
 
 
         const res = await req
@@ -113,9 +113,9 @@ describe(SETTINGS.PATH.SECURITY, () => {
 
     it ("it should return 403 when trying to terminate session of other user", async () => {
 
-        const userData2 = usersTestManager.createUserData({email:'diff@gmail.com', login:'diffLogin', password:'diffPassword'});
-        await usersTestManager.createUser(userData2);
-        const otherUserTokens: UserTokens = await usersTestManager.loginUser(userData2.login, userData2.password, 'OtherDevice');
+        const userData2 = usersTestManager.createData({email:'diff@gmail.com', login:'diffLogin', password:'diffPassword'});
+        await usersTestManager.create(userData2);
+        const otherUserTokens: UserTokens = await usersTestManager.login(userData2.login, userData2.password, 'OtherDevice');
         const payload = jwtService.verifyRefreshToken(otherUserTokens.refreshToken) as PayloadRT;
 
         await req

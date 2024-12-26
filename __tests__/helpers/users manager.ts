@@ -12,11 +12,6 @@ export type UserDto = {
     password: string;
 }
 
-export type UserData = {
-    login: string;
-    password: string;
-}
-
 export type UserTokens = {
     accessToken: string;
     refreshToken: string;
@@ -25,7 +20,7 @@ export type UserTokens = {
 const req = agent(app);
 
 export const usersTestManager = {
-    createUserData({ email, login, password }: { email?: string; login?: string; password?: string }): UserDto {
+    createData({ email, login, password }: { email?: string; login?: string; password?: string }): UserDto {
         return {
             login: login ?? 'someUser',
             email: email ?? 'abc@gmail.com',
@@ -46,7 +41,7 @@ export const usersTestManager = {
         return users
     },
 
-    async createUser(userData: UserDto, count?: number) : Promise<UserDBType> {
+    async create(userData: UserDto) : Promise<UserDBType> {
         const newId = new ObjectId();
         const hashedPass = await bcryptService.passwordHash(userData.password);
         const newUserData = {
@@ -67,7 +62,7 @@ export const usersTestManager = {
         return newUserData
     },
 
-    async loginUser(loginOrEmail: string, password: string, deviceName?: string ): Promise<UserTokens> {
+    async login(loginOrEmail: string, password: string, deviceName?: string ): Promise<UserTokens> {
 
         const res = await req
             .post(`${SETTINGS.PATH.AUTH}/login`)
