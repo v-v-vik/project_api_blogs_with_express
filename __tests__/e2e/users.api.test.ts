@@ -150,10 +150,13 @@ describe(SETTINGS.PATH.AUTH, () => {
         }
 
 
-        await req
+        const res = await req
             .post(`${SETTINGS.PATH.AUTH}/login`)
             .send(credentials)
             .expect(200)
+
+        const loginResponse = res.body;
+        console.log("login response was:", loginResponse)
 
 
 

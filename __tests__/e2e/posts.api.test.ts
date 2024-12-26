@@ -1,8 +1,10 @@
 import {SETTINGS} from "../../src/settings";
 import {app} from "../../src/app";
 import {agent} from "supertest";
-import {blogCollection, postCollection} from "../../src/repositories/db";
 import {ObjectId} from "mongodb";
+import {runDB} from "../../src/repositories/db";
+import {BlogModel} from "../../src/domain/blog entity";
+import {PostModel} from "../../src/domain/post entity";
 
 const req = agent(app);
 
@@ -16,8 +18,9 @@ describe(SETTINGS.PATH.POSTS, () => {
 
 
     beforeAll(async () => {
-        await blogCollection.deleteMany({});
-        await postCollection.deleteMany({});
+        await runDB();
+        await req.delete("/testing/all-data")
+            .expect(204)
     })
 
     it("should get empty array", async () => {
@@ -47,7 +50,7 @@ describe(SETTINGS.PATH.POSTS, () => {
             isMembership: false
         }
 
-        await blogCollection.insertOne(newBlog);
+        await BlogModel.create(newBlog);
 
         //create posts
          Post1 = {
@@ -70,7 +73,7 @@ describe(SETTINGS.PATH.POSTS, () => {
             blogName: newBlog.name
         }
 
-        await postCollection.insertMany([Post1, Post2])
+        await PostModel.insertMany([Post1, Post2])
 
         await req
             .get(SETTINGS.PATH.POSTS)
@@ -78,7 +81,7 @@ describe(SETTINGS.PATH.POSTS, () => {
                 pagesCount: 1,
                 page: 1,
                 pageSize: 10,
-                totalCount: await postCollection.countDocuments(),
+                totalCount: await PostModel.countDocuments(),
                 items: [
                     {
                         id: Post1._id.toString(),
