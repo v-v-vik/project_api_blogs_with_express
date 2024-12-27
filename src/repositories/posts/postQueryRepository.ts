@@ -15,7 +15,7 @@ const postOutputMapper = (post:any) => ({
 
 
 export const postQueryRepository = {
-    async getPostById(id: string){
+    async getPostById(id: string ){
         const result = await PostModel.findOne({_id:id});
         if (result) {
             return postOutputMapper(result);

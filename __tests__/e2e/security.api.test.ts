@@ -1,119 +1,59 @@
 import {SETTINGS} from "../../src/settings";
-import {
-    blogCollection,
-    postCollection,
-    requestCollection,
-    sessionCollection,
-    userCollection
-} from "../../src/repositories/db";
 import {agent} from "supertest";
 import {app} from "../../src/app";
 import {ObjectId} from "mongodb";
-import {bcryptService} from "../../src/adapters/bcrypt.service";
-import {randomUUID} from "node:crypto";
 import {jwtService} from "../../src/adapters/jwtService";
-import {Payload} from "../../src/input-output-types/token";
+import {PayloadRT} from "../../src/input-output-types/auth types";
+import {runDB} from "../../src/repositories/db";
+import {usersTestManager, UserTokens} from "../helpers/users manager";
+import mongoose from "mongoose";
 
 const req = agent(app);
 
-function generateRt(userId: string, count: number) {
-    const results = [];
-    for (let i = 0; i < count; i++) {
-        const dID = randomUUID();
-        const rToken = jwtService.createRefreshToken(userId, dID);
-        const payload = jwtService.verifyRefreshToken(rToken) as Payload;
-
-        results.push({ dID, rToken, payload });
-    }
-    return results;
-
-}
 
 describe(SETTINGS.PATH.SECURITY, () => {
 
     let userId: ObjectId;
     let userLogin: string;
 
-    let tokensData:{ dID: string, rToken: string, payload: Payload }[];
-    let token: string;
+
+    let tokenData: UserTokens;
+    let tokenData2: UserTokens;
+    let tokenData3: UserTokens;
+
 
     beforeAll(async () => {
-        await blogCollection.deleteMany({});
-        await postCollection.deleteMany({});
-        await userCollection.deleteMany({})
-        await requestCollection.deleteMany({});
-        await sessionCollection.deleteMany({});
+        await runDB();
+        await req.delete("/testing/all-data")
+            .expect(204)
+    })
+
+    afterAll(async () => {
+        await mongoose.connection.close()
     })
 
     it ("it should return active sessions", async () => {
         //create new user
-        userId = new ObjectId();
-        userLogin = "myLogin123";
-        const hashedPass = await bcryptService.passwordHash("password12345");
-        await userCollection.insertOne({
-            _id: userId,
-            accountData: {
-                login: userLogin,
-                email: "email123@gmail.com",
-                password: hashedPass,
-                createdAt: new Date().toISOString()
-            },
-            emailConfirmation: {
-                confirmationCode: randomUUID(),
-                expirationDate: new Date(),
-                status: 1
-            }
-        });
+        const userData = usersTestManager.createData({});
+        const newUser = await usersTestManager.create(userData);
+
+        userId = newUser._id;
+        userLogin = newUser.accountData.login;
+
         //login user 4 times
-        tokensData = generateRt(userId.toString(), 4);
-        token = jwtService.createAccessToken(userId.toString());
 
-        await sessionCollection.insertMany([
-            {
-            _id: new ObjectId(),
-            ip: "1:1:1",
-            title: "Device1",
-            lastActiveDate:tokensData[0].payload.iat.toString(),
-            deviceId: tokensData[0].dID,
-            userId: userId.toString(),
-            expDate: tokensData[0].payload.exp.toString()
-        }, {
-            _id: new ObjectId(),
-            ip: "1:1:1",
-            title: "Device2",
-            lastActiveDate:tokensData[1].payload.iat.toString(),
-            deviceId: tokensData[1].dID,
-            userId: userId.toString(),
-            expDate: tokensData[1].payload.exp.toString()
-            },
-            {
-            _id: new ObjectId(),
-            ip: "1:1:1",
-            title: "Device3",
-            lastActiveDate:tokensData[2].payload.iat.toString(),
-            deviceId: tokensData[2].dID,
-            userId: userId.toString(),
-            expDate: tokensData[2].payload.exp.toString()
-            },
-            {
-            _id: new ObjectId(),
-            ip: "1:1:1",
-            title: "Device4",
-            lastActiveDate:tokensData[3].payload.iat.toString(),
-            deviceId: tokensData[3].dID,
-            userId: userId.toString(),
-            expDate: tokensData[3].payload.exp.toString()
-            }
-        ]);
-
-
+        tokenData = await usersTestManager.login(userData.login, userData.password, 'Device1');
+        tokenData2 = await usersTestManager.login(userData.login, userData.password, 'Device2');
+        setTimeout(()=> new Promise(resolve => resolve), 5000);
+        tokenData3 = await usersTestManager.login(userData.login, userData.password, 'Device3');
+        const {accessToken: accessToken2, refreshToken: refreshToken2} = await usersTestManager.login(userData.login, userData.password, 'Device4');
 
 
         const res = await req
             .get(SETTINGS.PATH.SECURITY)
             .set({
-                'Authorization': 'Bearer ' + token,
-                'Cookie': `refreshToken=${tokensData[3].rToken}`
+                'Authorization': 'Bearer ' + accessToken2,
+                'Cookie': `refreshToken=${refreshToken2}`
             })
             .expect(200)
 
@@ -148,16 +88,140 @@ describe(SETTINGS.PATH.SECURITY, () => {
 
     it ("it should get 401 when trying to delete session by device id with wrong token", async () => {
 
+
+        const payload = jwtService.verifyRefreshToken(tokenData.refreshToken) as PayloadRT;
+
         await req
-            .delete(`${SETTINGS.PATH.SECURITY}/${tokensData[2].dID}`)
+            .delete(`${SETTINGS.PATH.SECURITY}/${payload.deviceId}`)
             .set({
                 'Authorization': 'Bearer ' + '213213215464',
                 'Cookie': `refreshToken=123`
             })
             .expect(401)
+    })
+
+    it ("it should return 404 when trying to terminate non-existing session", async () => {
+
+        await req
+            .delete(`${SETTINGS.PATH.SECURITY}/5464654654`)
+            .set({
+                'Authorization': 'Bearer ' + tokenData2.accessToken,
+                'Cookie': `refreshToken=${tokenData2.refreshToken}`
+            })
+            .expect(404)
+    })
+
+    it ("it should return 403 when trying to terminate session of other user", async () => {
+
+        const userData2 = usersTestManager.createData({email:'diff@gmail.com', login:'diffLogin', password:'diffPassword'});
+        await usersTestManager.create(userData2);
+        const otherUserTokens: UserTokens = await usersTestManager.login(userData2.login, userData2.password, 'OtherDevice');
+        const payload = jwtService.verifyRefreshToken(otherUserTokens.refreshToken) as PayloadRT;
+
+        await req
+            .delete(`${SETTINGS.PATH.SECURITY}/${payload.deviceId}`)
+            .set({
+                'Authorization': 'Bearer ' + tokenData2.accessToken,
+                'Cookie': `refreshToken=${tokenData2.refreshToken}`
+            })
+            .expect(403)
+    })
+
+    it("when refresh token for existed deviceId only LastActiveDate should change, amount of sessions stays the same", async () => {
+
+        const payload = jwtService.verifyRefreshToken(tokenData.refreshToken) as PayloadRT;
+
+        await req
+            .post(`${SETTINGS.PATH.AUTH}/refresh-token`)
+            .set({
+                'Authorization': 'Bearer ' + tokenData.accessToken,
+                'Cookie': `refreshToken=${tokenData.refreshToken}`
+            })
+            .expect(200)
+
+        const res = await req
+            .get(SETTINGS.PATH.SECURITY)
+            .set({
+                'Authorization': 'Bearer ' + tokenData.accessToken,
+                'Cookie': `refreshToken=${tokenData.refreshToken}`
+            })
+            .expect(200)
+
+        const sessions = res.body;
+        console.log("sessions:", sessions)
+        expect(sessions).toHaveLength(4);
+        expect(sessions[1].lastActiveDate).not.toEqual(payload.iat)
 
 
     })
 
+    it("it should terminate session on Device2", async () => {
+
+        const payload = jwtService.verifyRefreshToken(tokenData2.refreshToken) as PayloadRT;
+
+        await req
+            .delete(`${SETTINGS.PATH.SECURITY}/${payload.deviceId}`)
+            .set({
+                'Authorization': 'Bearer ' + tokenData.accessToken,
+                'Cookie': `refreshToken=${tokenData.refreshToken}`
+            })
+            .expect(204)
+
+        const res = await req
+            .get(SETTINGS.PATH.SECURITY)
+            .set({
+                'Authorization': 'Bearer ' + tokenData.accessToken,
+                'Cookie': `refreshToken=${tokenData.refreshToken}`
+            })
+            .expect(200)
+
+        const sessions = res.body;
+        expect(sessions).toHaveLength(3);
+    })
+
+    it("it should logout Device3", async () => {
+
+        await req
+            .post(`${SETTINGS.PATH.AUTH}/logout`)
+            .set({
+                'Authorization': 'Bearer ' + tokenData3.accessToken,
+                'Cookie': `refreshToken=${tokenData3.refreshToken}`
+            })
+            .expect(204)
+
+        const res = await req
+            .get(SETTINGS.PATH.SECURITY)
+            .set({
+                'Authorization': 'Bearer ' + tokenData.accessToken,
+                'Cookie': `refreshToken=${tokenData.refreshToken}`
+            })
+            .expect(200)
+
+        const sessions = res.body;
+        expect(sessions).toHaveLength(2);
+
+    })
+
+    it("it should terminate all sessions except for the active one", async () => {
+        await req
+            .delete(SETTINGS.PATH.SECURITY)
+            .set({
+                'Authorization': 'Bearer ' + tokenData.accessToken,
+                'Cookie': `refreshToken=${tokenData.refreshToken}`
+            })
+            .expect(204)
+
+        const res = await req
+            .get(SETTINGS.PATH.SECURITY)
+            .set({
+                'Authorization': 'Bearer ' + tokenData.accessToken,
+                'Cookie': `refreshToken=${tokenData.refreshToken}`
+            })
+            .expect(200)
+
+        const sessions = res.body;
+        expect(sessions).toHaveLength(1);
+
+    })
 
 })

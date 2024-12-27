@@ -2,14 +2,15 @@ import jwt from "jsonwebtoken";
 import {SETTINGS} from "../settings";
 
 
-export const jwtService = {
+class JwtService {
+
     createAccessToken(id: string) {
-        return jwt.sign({userId: id}, SETTINGS.ACCESS_TOKEN_SECRET, {expiresIn: '10m'});
-    },
+        return jwt.sign({userId: id}, SETTINGS.ACCESS_TOKEN_SECRET, {expiresIn: '30m'});
+    }
 
     createRefreshToken(id: string, deviceId: string) {
-        return jwt.sign({userId: id,deviceId}, SETTINGS.REFRESH_TOKEN_SECRET, {expiresIn: '20m'})
-    },
+        return jwt.sign({userId: id,deviceId}, SETTINGS.REFRESH_TOKEN_SECRET, {expiresIn: '60m'})
+    }
 
     getUserIdByAccessToken(token: string) {
         try {
@@ -18,7 +19,7 @@ export const jwtService = {
             console.error("Error while token verification");
             return null;
         }
-    },
+    }
 
     verifyRefreshToken(token: string) {
         try {
@@ -27,11 +28,11 @@ export const jwtService = {
             console.error("Error while token verification");
             return null;
         }
-    },
+    }
 
     createRecoveryCode(userEmail: string) {
         return jwt.sign({email:userEmail}, 'RecoveryPasswordSecret', {expiresIn: '5m'});
-    },
+    }
 
     verifyRecoveryCode(code: string) {
         try {
@@ -42,3 +43,5 @@ export const jwtService = {
         }
     }
 }
+
+export const jwtService = new JwtService();

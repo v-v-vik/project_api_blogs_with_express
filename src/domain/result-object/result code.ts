@@ -13,7 +13,8 @@ export enum ResultStatus {
     Created = 'Created',
     NoContent = 'NoContent',
     TooManyRequests = 'TooManyRequests',
-
+    ServerError = 'ServerError',
+    Conflict = 'Conflict'
 }
 
 export enum HttpStatuses {
@@ -24,6 +25,7 @@ export enum HttpStatuses {
     Unauthorized = 401,
     Forbidden = 403,
     NotFound = 404,
+    Conflict = 409,
     ServerError = 500,
     TooManyRequests = 429
 }

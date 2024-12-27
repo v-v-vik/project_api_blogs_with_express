@@ -1,6 +1,7 @@
 import * as mongoose from "mongoose";
 import {ObjectId, WithId} from "mongodb";
 import {HydratedDocument, Model} from "mongoose";
+import {LikeInfoDBType, LikeInfoView} from "./like entity";
 
 
 
@@ -10,6 +11,9 @@ export type CommentDBType = {
     commentatorInfo: CommentatorInfoModel
     createdAt: string;
     postId: string;
+    likesInfo: LikeInfoDBType
+
+
 }
 
 export type CommentatorInfoModel = {
@@ -26,6 +30,7 @@ export type CommentViewModel = {
         userLogin: string;
     }
     createdAt: string;
+    likesInfo: LikeInfoView
 }
 
 
@@ -39,13 +44,19 @@ export const commentatorInfoSchema = new mongoose.Schema<CommentatorInfoModel>({
     userLogin: {type: String, require: true}
 })
 
+export const likeInfoSchema = new mongoose.Schema<LikeInfoView>({
+    likesCount: {type: Number, require: true},
+    dislikesCount: {type: Number, require: true}
+});
+
 
 export const commentSchema = new mongoose.Schema<WithId<CommentDBType>>({
     _id: {type: ObjectId, require: true},
     content: {type: String, require: true},
     commentatorInfo: {type:commentatorInfoSchema},
     createdAt: {type: String, require: true},
-    postId: {type: String, require: true}
+    postId: {type: String, require: true},
+    likesInfo: {type: likeInfoSchema, require: true}
 });
 
 

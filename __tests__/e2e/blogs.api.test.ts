@@ -4,6 +4,7 @@ import {agent} from "supertest";
 import {ObjectId} from "mongodb";
 import {BlogModel} from "../../src/domain/blog entity";
 import {PostModel} from "../../src/domain/post entity";
+import {runDB} from "../../src/repositories/db";
 
 const req = agent(app);
 
@@ -16,12 +17,10 @@ function encodeAuth(){
 
 describe(SETTINGS.PATH.BLOGS, () => {
 
-
-
     beforeAll(async () => {
-        await BlogModel.deleteMany({});
-        await PostModel.deleteMany({});
-        console.log("All Collections cleared")
+        await runDB();
+        await req.delete("/testing/all-data")
+            .expect(204)
     })
 
     it("should get empty array", async () => {
@@ -33,9 +32,6 @@ describe(SETTINGS.PATH.BLOGS, () => {
                 totalCount: 0,
                 items: []
             })
-
-
-
     })
 
 
@@ -93,20 +89,15 @@ describe(SETTINGS.PATH.BLOGS, () => {
                         createdAt: newBlog3.createdAt,
                         isMembership: newBlog3.isMembership
                     }
-
                 ]
             })
-
-
-
     })
 
     it("should create a new element", async () => {
         const newData = {
             name: "Beauty Blog",
             description: "Blog about make-up",
-            websiteUrl: "https://www.beauty-blog.com/",
-
+            websiteUrl: "https://www.beauty-blog.com/"
         }
 
 
@@ -116,7 +107,6 @@ describe(SETTINGS.PATH.BLOGS, () => {
             .send(newData)
 
         newBlog = res.body;
-
 
         expect(newBlog).toEqual({
             id: expect.any(String),

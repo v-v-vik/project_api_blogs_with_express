@@ -1,11 +1,14 @@
 import {SETTINGS} from "../../src/settings";
-import {blogCollection, commentCollection, postCollection, userCollection} from "../../src/repositories/db";
 import {agent} from "supertest";
 import {app} from "../../src/app";
 import {ObjectId} from "mongodb";
 import {bcryptService} from "../../src/adapters/bcrypt.service";
-import {CommentViewModel} from "../../src/input-output-types/comment types";
 import {randomUUID} from "node:crypto";
+import {runDB} from "../../src/repositories/db";
+import {BlogModel} from "../../src/domain/blog entity";
+import {PostModel} from "../../src/domain/post entity";
+import {UserModel} from "../../src/domain/user entity";
+import {CommentViewModel} from "../../src/domain/comment entity";
 
 const req = agent(app);
 
@@ -18,14 +21,12 @@ describe(SETTINGS.PATH.COMMENTS, () => {
     let userLogin: string;
 
     beforeAll(async () => {
-        await blogCollection.deleteMany({});
-        await postCollection.deleteMany({});
-        await userCollection.deleteMany({});
-        await commentCollection.deleteMany({});
-
+        await runDB();
+        await req.delete("/testing/all-data")
+            .expect(204)
 
         blogId = new ObjectId();
-        await blogCollection.insertOne({
+        await BlogModel.create({
             _id: blogId,
             name: "Travel Blog",
             description: "Blog about traveling",
@@ -35,7 +36,7 @@ describe(SETTINGS.PATH.COMMENTS, () => {
         });
 
         postId = new ObjectId();
-        await postCollection.insertOne({
+        await PostModel.create({
             _id: postId,
             title: "Some title1",
             shortDescription: "Some description1",
@@ -48,7 +49,7 @@ describe(SETTINGS.PATH.COMMENTS, () => {
         userId = new ObjectId();
         userLogin = "myLogin123";
         const hashedPass = await bcryptService.passwordHash("password12345");
-        await userCollection.insertOne({
+        await UserModel.create({
             _id: userId,
             accountData: {
                 login: userLogin,
@@ -104,6 +105,11 @@ describe(SETTINGS.PATH.COMMENTS, () => {
                userLogin: userLogin,
            },
            createdAt: expect.any(String),
+           likesInfo: {
+               likesCount: 0,
+               dislikesCount: 0,
+               myStatus: 'None'
+           }
         })
     })
 

@@ -1,7 +1,8 @@
 import {SETTINGS} from "../../src/settings";
-import {blogCollection, postCollection, userCollection} from "../../src/repositories/db";
 import {agent} from "supertest";
 import {app} from "../../src/app";
+import {UserModel} from "../../src/domain/user entity";
+import {runDB} from "../../src/repositories/db";
 
 const req = agent(app);
 
@@ -14,9 +15,9 @@ function encodeAuth() {
 describe(SETTINGS.PATH.USERS, () => {
 
     beforeAll(async () => {
-        await blogCollection.deleteMany({});
-        await postCollection.deleteMany({});
-        await userCollection.deleteMany({});
+        await runDB();
+        await req.delete("/testing/all-data")
+            .expect(204)
     })
 
 
@@ -95,7 +96,7 @@ describe(SETTINGS.PATH.USERS, () => {
                 pagesCount: 1,
                 page: 1,
                 pageSize: 10,
-                totalCount: await userCollection.countDocuments({}),
+                totalCount: await UserModel.countDocuments({}),
                 items: [
                     {  ...newUser }
                 ]
@@ -124,9 +125,8 @@ describe(SETTINGS.PATH.USERS, () => {
 describe(SETTINGS.PATH.AUTH, () => {
 
     beforeAll(async () => {
-        await blogCollection.deleteMany({});
-        await postCollection.deleteMany({});
-        await userCollection.deleteMany({});
+        await req.delete("/testing/all-data")
+            .expect(204)
     })
 
     let newUser:any = null;
@@ -150,10 +150,13 @@ describe(SETTINGS.PATH.AUTH, () => {
         }
 
 
-        await req
+        const res = await req
             .post(`${SETTINGS.PATH.AUTH}/login`)
             .send(credentials)
             .expect(200)
+
+        const loginResponse = res.body;
+        console.log("login response was:", loginResponse)
 
 
 
