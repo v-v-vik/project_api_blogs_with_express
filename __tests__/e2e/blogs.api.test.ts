@@ -4,6 +4,7 @@ import {agent} from "supertest";
 import {ObjectId} from "mongodb";
 import {BlogModel} from "../../src/domain/blog entity";
 import {PostModel} from "../../src/domain/post entity";
+import {runDB} from "../../src/repositories/db";
 
 const req = agent(app);
 
@@ -16,12 +17,10 @@ function encodeAuth(){
 
 describe(SETTINGS.PATH.BLOGS, () => {
 
-
-
     beforeAll(async () => {
-        await BlogModel.deleteMany({});
-        await PostModel.deleteMany({});
-        console.log("All Collections cleared")
+        await runDB();
+        await req.delete("/testing/all-data")
+            .expect(204)
     })
 
     it("should get empty array", async () => {

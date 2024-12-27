@@ -50,7 +50,7 @@ export const blogsTestManager = {
             isMembership: false
         }
         await BlogModel.create(blogData)
-        return blogData
+        return [blogData]
     }
 
 }
