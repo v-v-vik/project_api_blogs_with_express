@@ -24,23 +24,23 @@ export const blogsTestManager = {
         return blogs
     },
 
-    async createBlog(data: BlogInputModel, count?: number): Promise<BlogDBType> {
-        // if (count) {
-        //     const blogs = [];
-        //     for (let i = 0; i <= count; i++) {
-        //         blogs.push({
-        //             _id: new ObjectId(),
-        //             name: data.name + i,
-        //             description: data.description + i,
-        //             websiteUrl: `https://some-blog${i}.com/`,
-        //             createdAt: new Date().toISOString(),
-        //             isMembership: false
-        //         })
-        //     }
-        //     await BlogModel.insertMany(blogs);
-        //     return blogs
-        //
-        // }
+    async createBlog(data: BlogInputModel, count?: number): Promise<BlogDBType[]> {
+        if (count) {
+            const blogs = [];
+            for (let i = 0; i <= count; i++) {
+                blogs.push({
+                    _id: new ObjectId(),
+                    name: data.name + i,
+                    description: data.description + i,
+                    websiteUrl: `https://some-blog${i}.com/`,
+                    createdAt: new Date().toISOString(),
+                    isMembership: false
+                })
+            }
+            await BlogModel.insertMany(blogs);
+            return blogs
+
+        }
         const blogData = {
             _id: new ObjectId(),
             name: data.name,
@@ -65,7 +65,7 @@ export const postsTestManager = {
         }
     },
 
-    async createPost(blogId: string, blogName: string, data: PostInputModel, count?: number): Promise<PostDBType | PostDBType[]> {
+    async createPost(blogId: string, blogName: string, data: PostInputModel, count?: number): Promise<PostDBType[]> {
         if (count) {
             const posts = [];
             for (let i = 0; i <= count; i++) {
@@ -93,6 +93,6 @@ export const postsTestManager = {
             createdAt: new Date().toISOString()
         }
         await BlogModel.create(postData);
-        return postData
+        return [postData]
     }
 }

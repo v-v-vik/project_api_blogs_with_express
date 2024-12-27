@@ -3,7 +3,7 @@ import {CommentDBType, CommentModel} from "../../src/domain/comment entity";
 
 
 export const commentsTestManager = {
-    async createComment(userId: string, userLogin: string, postId: string, count?: number, content?: string ): Promise<CommentDBType | CommentDBType[]> {
+    async createComment(userId: string, userLogin: string, postId: string, count?: number, content?: string ): Promise<CommentDBType[]> {
         if (count) {
             const comments = [];
             for (let i = 0; i <= count; i++) {
@@ -43,7 +43,7 @@ export const commentsTestManager = {
             }
         }
         await CommentModel.create(commentData);
-        return commentData
+        return [commentData]
     }
 
 }

@@ -100,7 +100,6 @@ class CommentService {
             }
         }
         const currentStatus = await likeRepository.findReactionByParentId(commentId, userId);
-        console.log("current status is", currentStatus)
         if (currentStatus === data.likeStatus) {
             return {
                 status: ResultStatus.NoContent,
