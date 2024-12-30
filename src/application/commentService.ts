@@ -8,6 +8,7 @@ import {likeRepository} from "../repositories/likes/likeDBRepository";
 import {commentQueryRepository} from "../repositories/comments/commentQueryRepository";
 import {postRepository} from "../repositories/posts/postDbRepository";
 import {QueryType} from "../input-output-types/some";
+import {userRepository} from "../repositories/users/userDbRepository";
 
 
 
@@ -99,7 +100,7 @@ class CommentService {
 
             }
         }
-        const currentStatus = await likeRepository.findReactionByParentId(commentId, userId);
+        const currentStatus = await likeRepository.findReactionStatusByParentId(commentId, userId);
         if (currentStatus === data.likeStatus) {
             return {
                 status: ResultStatus.NoContent,
@@ -135,7 +136,10 @@ class CommentService {
                 data: 'Request failed'
             }
         }
-        await likeRepository.addReaction(data.likeStatus, commentId, userId);
+        const userLogin = await userRepository.findUserById(userId);
+        if (userLogin) {
+            await likeRepository.addReaction(data.likeStatus, commentId, userId, userLogin.accountData.login);
+        }
         return {
             status: ResultStatus.NoContent,
             data: null

@@ -6,6 +6,8 @@ import {accessTokenMiddleware} from "../middlewares/accessTokenMiddleware";
 import {commentValidators} from "../middlewares/commentValidators";
 import {postController} from "../controllers/posts-controller";
 import {commentController} from "../controllers/comments-controller";
+import {likeStatusValidator} from "../middlewares/likeValidator";
+import {checkInputErrorsMiddleware} from "../middlewares/checkInputErrorsMiddleware";
 
 
 export const postRouter = Router();
@@ -32,6 +34,16 @@ postRouter.put(
     postValidators,
     postController.update
 );
+
+postRouter.put(
+    "/:id/like-status",
+    accessTokenMiddleware,
+    objectIdValidator,
+    likeStatusValidator,
+    checkInputErrorsMiddleware,
+    postController.addReaction
+);
+
 postRouter.delete(
     "/:id",
     authMiddleware,

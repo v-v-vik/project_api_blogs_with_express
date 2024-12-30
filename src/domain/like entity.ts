@@ -7,8 +7,9 @@ export type LikeDBType = {
     createdAt: Date;
     status: LikeStatus;
     authorId: string;
+    authorLogin: string;
     parentId: string;
-
+    isDeleted: boolean;
 }
 
 
@@ -36,13 +37,28 @@ export type LikeInfoDBType = {
     dislikesCount: number;
 }
 
+export type PostLikesInfo = {
+    likesCount: number;
+    dislikesCount: number;
+    myStatus: LikeStatus;
+    newestLikes: newLikesInfo[]
+}
+
+export type newLikesInfo = {
+    addedAt: Date;
+    userId: string;
+    login: string;
+}
+
 
 export const likeSchema = new mongoose.Schema<WithId<LikeDBType>>({
     _id: {type: ObjectId, require: true},
     createdAt: {type: Date, require: true},
     status: {type: String, require: true},
     authorId: {type: String, require: true},
-    parentId: {type: String, require: true}
+    authorLogin: {type: String, require: true},
+    parentId: {type: String, require: true},
+    isDeleted: {type: Boolean, require: true}
 });
 export const LikeModel = mongoose.model<LikeDBType, LikeModelType>('reactions', likeSchema);
 

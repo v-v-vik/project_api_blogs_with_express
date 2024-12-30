@@ -3,18 +3,20 @@ import {ObjectId} from "mongodb";
 
 
 export const likeRepository = {
-    async addReaction(data:LikeStatus, commentId: string, userId: string) {
+    async addReaction(data:LikeStatus, commentId: string, userId: string, userLogin:string) {
         const res = await LikeModel.create({
             _id: new ObjectId(),
             createdAt: new Date(),
             status: data,
             authorId: userId,
-            parentId: commentId
+            authorLogin: userLogin,
+            parentId: commentId,
+            isDeleted: false
         })
         return !!res.id;
     },
 
-    async findReactionByParentId(commentId: string, userId: string) {
+    async findReactionStatusByParentId(commentId: string, userId: string) {
         const res = await LikeModel.findOne({
             parentId: commentId,
             authorId: userId
@@ -25,12 +27,50 @@ export const likeRepository = {
         return res.status;
     },
 
-    async findReactionByUserId(userId: string) {
-        const res = await LikeModel.find({authorId:userId}).sort({createdAt: -1});
+    async findAllReactionByUserId(userId: string) {
+        const res = await LikeModel.find({authorId:userId, isDeleted:false}).sort({createdAt: -1});
         if (!res) {
             return null;
         }
         return res
-    }
+    },
+
+    async flagReaction(postId: string, userId: string) {
+        const res = await LikeModel.updateOne(
+        {
+            parentId: postId,
+            authorId: userId,
+            isDeleted: false
+        },{
+
+            $set: {isDeleted: true}
+        });
+        return res.matchedCount === 1
+
+    },
+
+    async getLatestLikes(postId: string) {
+        const res = await LikeModel.find({
+            parentId: postId,
+            status:LikeStatus.Like,
+            isDeleted: false
+        }).sort({createdAt: -1}).limit(3);
+        if (!res) {
+            return null;
+        }
+        return res
+    },
+
+    async findAllLikeReactionsByParentId(postId: string[]) {
+        const res = await LikeModel.find({
+            parentId: {$in: postId},
+            isDeleted: false,
+            status: LikeStatus.Like
+        }).sort({createdAt: -1});
+        if (!res) {
+            return null;
+        }
+        return res
+    },
 
 }
