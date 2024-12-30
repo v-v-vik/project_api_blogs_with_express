@@ -1,4 +1,5 @@
 import {PostDBType, PostDocument, PostInputModel, PostModel} from "../../domain/post entity";
+import {LikeInfoDBType} from "../../domain/like entity";
 
 
 export const postRepository = {
@@ -35,5 +36,14 @@ export const postRepository = {
             return null;
         }
         return result;
+    },
+
+    async updatePostLikes(postId:string, update: Partial<LikeInfoDBType>){
+        const result = await PostModel.updateOne(
+            {_id: postId},
+            {
+                $set: {extendedLikesInfo: update}
+            });
+        return result.matchedCount === 1
     }
 }

@@ -3,8 +3,11 @@ import {matchedData} from "express-validator";
 import {postService} from "../application/postService";
 import {postQueryRepository} from "../repositories/posts/postQueryRepository";
 import {Request, Response} from "express";
-import {HttpStatuses} from "../domain/result-object/result code";
-import {Paginator, ParamType, QueryType} from "../input-output-types/some";
+import {HttpStatuses, resultCode, ResultStatus} from "../domain/result-object/result code";
+import {ParamType, QueryType} from "../input-output-types/some";
+import {LikeInputModel} from "../domain/like entity";
+import {PayloadAT} from "../input-output-types/auth types";
+import jwt from "jsonwebtoken";
 
 
 class PostController{
@@ -26,9 +29,15 @@ class PostController{
     }
 
     async find(req: Request<ParamType, any, any, QueryType>,
-               res: Response<Paginator<PostViewModel>>){
+               res: Response){
 
-        const foundPosts = await postQueryRepository.getPostFilter(req.query,req.params.id);
+        let decoded: PayloadAT | null = null;
+        if (req.headers.authorization) {
+            const token = req.headers.authorization.split(' ')[1];
+            decoded = jwt.decode(token) as PayloadAT;
+        }
+
+        const foundPosts = await postQueryRepository.getPostFilter(req.query,req.params.id, decoded?.userId);
         res
             .status(HttpStatuses.Success)
             .json(foundPosts)
@@ -37,7 +46,13 @@ class PostController{
     async findById(req: Request,
                    res: Response<PostViewModel | null>){
 
-        const searchPost = await postQueryRepository.getPostById(req.params.id);
+        let decoded: PayloadAT | null = null;
+        if (req.headers.authorization) {
+            const token = req.headers.authorization.split(' ')[1];
+            decoded = jwt.decode(token) as PayloadAT;
+        }
+
+        const searchPost = await postQueryRepository.getPostById(req.params.id, decoded?.userId);
         if (searchPost) {
             res
                 .status(HttpStatuses.Success)
@@ -103,7 +118,13 @@ class PostController{
     async findByBlogId(req: Request<ParamType, any, any, QueryType>,
                        res: Response){
 
-        const foundPosts = await postService.find(req.params.id, req.query);
+        let decoded: PayloadAT | null = null;
+        if (req.headers.authorization) {
+            const token = req.headers.authorization.split(' ')[1];
+            decoded = jwt.decode(token) as PayloadAT;
+        }
+
+        const foundPosts = await postService.find(req.params.id, req.query, decoded?.userId);
         if (!foundPosts) {
             res
                 .status(HttpStatuses.NotFound)
@@ -112,6 +133,22 @@ class PostController{
         res
             .status(HttpStatuses.Success)
             .json(foundPosts)
+    }
+
+    async addReaction(req: Request<ParamType, any, LikeInputModel>,
+                      res: Response) {
+
+        const data: LikeInputModel = matchedData(req);
+        const result = await postService.addReaction(data, req.params.id, req.user.id);
+        if (result.status !== ResultStatus.NoContent) {
+            res
+                .status(resultCode(result.status))
+                .json(result.data)
+            return;
+        }
+        res
+            .status(HttpStatuses.NoContent)
+            .json();
     }
 }
 

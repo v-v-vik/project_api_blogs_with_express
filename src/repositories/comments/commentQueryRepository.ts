@@ -26,7 +26,7 @@ export const commentQueryRepository = {
         const comment = await CommentModel.findOne({_id: id});
         if (!comment) return null;
         if (userId) {
-            const res = await likeRepository.findReactionByParentId(id, userId);
+            const res = await likeRepository.findReactionStatusByParentId(id, userId);
             if (res) {
                 userReaction = res;
             }
@@ -40,7 +40,7 @@ export const commentQueryRepository = {
 
         let allUserReactions: LikeDBType[] | null = [];
         if (userId) {
-            allUserReactions = await likeRepository.findReactionByUserId(userId);
+            allUserReactions = await likeRepository.findAllReactionByUserId(userId);
         }
 
         try {
