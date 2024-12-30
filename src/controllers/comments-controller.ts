@@ -21,6 +21,7 @@ class CommentsController {
             res
                 .status(HttpStatuses.NotFound)
                 .json()
+            return;
         }
         res
             .status(201)
@@ -41,6 +42,7 @@ class CommentsController {
             res
                 .status(HttpStatuses.NotFound)
                 .json()
+            return;
         }
         res
             .status(HttpStatuses.Success)
@@ -61,6 +63,7 @@ class CommentsController {
             res
                 .status(HttpStatuses.NotFound)
                 .json()
+            return;
         }
         res
             .status(HttpStatuses.Success)

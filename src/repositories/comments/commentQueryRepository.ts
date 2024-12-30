@@ -2,7 +2,7 @@
 import {QueryType} from "../../input-output-types/some";
 import {sortQueryFields} from "../../utils/sortQueryFields.utils";
 import {CommentDBType, CommentModel} from "../../domain/comment entity";
-import {LikeStatus} from "../../domain/like entity";
+import {LikeDBType, LikeStatus} from "../../domain/like entity";
 import {likeRepository} from "../likes/likeDBRepository";
 
 const commentOutputMapper = (comment: CommentDBType, userReaction: LikeStatus) =>  ({
@@ -38,31 +38,36 @@ export const commentQueryRepository = {
 
         const sortResult = sortQueryFields(query);
 
+        let allUserReactions: LikeDBType[] | null = [];
+        if (userId) {
+            allUserReactions = await likeRepository.findReactionByUserId(userId);
+        }
 
         try {
             const items = await CommentModel
-                .find({postId:id})
+                .find({postId: id})
                 .sort(sortResult.sort)
                 .skip(sortResult.skip)
                 .limit(sortResult.pageSize)
                 .lean() as CommentDBType[]
 
-            const totalCount = await CommentModel.countDocuments({postId:id});
+            const totalCount = await CommentModel.countDocuments({postId: id});
 
 
-            const mappedComments = await Promise.all (items.map(async(comment) => {
+            const mappedComments = items.map((comment) => {
 
                 let userReaction: LikeStatus = LikeStatus.None;
                 if (userId) {
-
-                    const res = await likeRepository.findReactionByParentId(comment._id.toString(), userId);
-                    if (res) {
-                        userReaction = res;
+                    if (allUserReactions) {
+                        const specificCommReactions: LikeDBType[] = allUserReactions.filter(reaction => reaction.parentId === comment._id.toString());
+                        if(specificCommReactions.length > 0){
+                            userReaction = specificCommReactions[0].status;
+                        }
                     }
                 }
-                return commentOutputMapper(comment, userReaction);
 
-            }));
+                return commentOutputMapper(comment, userReaction);
+            })
 
             return {
                 pagesCount: Math.ceil(totalCount / sortResult.pageSize),
@@ -71,6 +76,7 @@ export const commentQueryRepository = {
                 totalCount: totalCount,
                 items: mappedComments
             }
+
         } catch (error) {
             console.log(error);
             return {
@@ -82,6 +88,5 @@ export const commentQueryRepository = {
                 error: error
             };
         }
-
     }
 }

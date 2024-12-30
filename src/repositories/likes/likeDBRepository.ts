@@ -25,14 +25,12 @@ export const likeRepository = {
         return res.status;
     },
 
-    // async deleteReaction(commentId: string, userId: string) {
-    //     const res = await LikeModel.deleteOne({
-    //         authorId: userId,
-    //         parentId: commentId
-    //     })
-    //     if (!res) {
-    //         return null;
-    //     }
-    //     return res;
-    // }
+    async findReactionByUserId(userId: string) {
+        const res = await LikeModel.find({authorId:userId}).sort({createdAt: -1});
+        if (!res) {
+            return null;
+        }
+        return res
+    }
+
 }
