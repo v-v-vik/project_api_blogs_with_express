@@ -53,8 +53,6 @@ export const postQueryRepository = {
 
     async getPostFilter(query: QueryType, blogId?: string, userId?: string) {
 
-        console.log("user id", userId)
-
 
         let latestLikes: newLikesInfo[] = [];
         let allUserReactions: LikeDBType[] | null = [];

@@ -28,11 +28,11 @@ export const blogQueryRepository = {
     async getBlogsFilter(id: string | undefined, query: QueryType) {
 
         const filter: any = {};
-        //Set the filter to search by id if provided
+
         if (id) {
             filter._id = id
         }
-        //Set the filter to search by term in blog title
+
         const searchNameTerm = query.searchNameTerm ?? null;
         if (searchNameTerm) {
             filter.name = {$regex: query.searchNameTerm, $options: 'i'}
@@ -40,14 +40,11 @@ export const blogQueryRepository = {
 
 
 
-        // Set pagination defaults
+
         const pageNumber = query.pageNumber ? +query.pageNumber : 1;
-
         const pageSize = query.pageSize !== undefined ? +query.pageSize : 10;
-
         const skip = (pageNumber - 1) * pageSize;
 
-        //Sort settings
         const sort: Sort = {
             [query.sortBy || 'createdAt']: query.sortDirection === 'asc' ? 1 : -1,
         };
